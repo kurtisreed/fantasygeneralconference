@@ -18,18 +18,27 @@ upload the folder and it runs.
 | Which choir sings each session | 4 | 4 |
 | Tie colors (Oaks, Eyring, Christofferson) + choir dress | 4 | 12 |
 | How many women pray / speak, and how many speakers are from outside the US | 3 | 9 |
-| Over/under on "Jesus Christ", "temple", "covenant", "Book of Mormon" | 4 | 12 |
+| Over/under on "Jesus Christ", "temple(s)", "covenant(s)", "Book of Mormon" | 4 | 12 |
 | Over/under on times President Oaks is quoted | 1 | 3 |
 | Sessions watched (1 pt each) | 1 | 4 |
 
 Point values and over/under lines are editable in the admin at any time.
 
-### Setting the over/under lines
+### Settling the over/under lines
 
-The seeded lines are placeholders. Before you open the sheet, count the words
-in the *previous* conference's talks on the Church's site and set each line a
-bit above or below that number, so the pick is genuinely 50/50. An exact tie
-between the line and the real count scores nobody.
+`tools/count_words.php` fetches every talk of a conference from the Church's
+study API and counts the words — only what was spoken, with footnotes, titles
+and bylines stripped. Talk text posts within a day or two of each session,
+weeks before the Liahona PDF.
+
+```bash
+php tools/count_words.php 2026/10           # print the counts
+php tools/count_words.php 2026/10 --write   # store them as results and rescore
+```
+
+The lines shipped in the seed are set from the last three conferences, measured
+with this same script, and every line ends in a half so a tie is impossible.
+See [docs/word-counts.md](docs/word-counts.md) for the numbers and the rules.
 
 ## Local setup (XAMPP)
 
@@ -92,6 +101,8 @@ admin/             login, dashboard, results, text rulings, players, questions, 
 lib/               db, scoring engine, question loading, auth, layout
 sql/schema.sql     tables
 tools/install.php  one-time installer (delete after setup)
+tools/count_words.php  fetches conference talks and counts the over/under words
+docs/word-counts.md    historical counts, counting rules, how the lines were set
 ```
 
 ## Question types

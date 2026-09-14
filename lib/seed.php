@@ -166,21 +166,28 @@ function fgc_seed(string $slug = 'april-2026', string $name = 'April 2026 Genera
     ];
 
     // ---- 7. Over/under word counts (15 pts) ----
+    // Lines are set from the last three conferences; see docs/word-counts.md.
+    // 'pattern' is what tools/count_words.php actually counts, so the rule on
+    // the sheet and the rule the script applies can never drift apart.
     $words = [
-        ['wc_jesus_christ',   'the phrase "Jesus Christ"',  175],
-        ['wc_temple',         'the word "temple"',          100],
-        ['wc_covenant',       'the word "covenant"',         75],
-        ['wc_book_of_mormon', 'the phrase "Book of Mormon"', 50],
+        ['wc_jesus_christ', 'the phrase "Jesus Christ"', 287.5, '/\bJesus\s+Christ\b/iu',
+         'Includes "The Church of Jesus Christ of Latter-day Saints."'],
+        ['wc_temple', 'the word "temple" or "temples"', 44.5, '/\btemples?\b/iu',
+         'Singular and plural both count.'],
+        ['wc_covenant', 'the word "covenant" or "covenants"', 87.5, '/\bcovenants?\b/iu',
+         'Both count, including "Doctrine and Covenants."'],
+        ['wc_book_of_mormon', 'the phrase "Book of Mormon"', 32.5, '/\bBook\s+of\s+Mormon\b/iu',
+         'Counted as a phrase.'],
     ];
-    foreach ($words as [$key, $what, $line]) {
+    foreach ($words as [$key, $what, $line, $pattern, $note]) {
         $defs[] = [
             'qkey'      => $key,
             'section'   => 'words',
             'type'      => 'over_under',
             'points'    => 3,
             'prompt'    => 'How many times will ' . $what . ' be said?',
-            'help_text' => 'Counted across all talks using the published transcripts.',
-            'config'    => ['line' => $line],
+            'help_text' => $note . ' Counted from the talks on the Church website.',
+            'config'    => ['line' => $line, 'pattern' => $pattern],
         ];
     }
     $defs[] = [
@@ -190,7 +197,7 @@ function fgc_seed(string $slug = 'april-2026', string $name = 'April 2026 Genera
         'points'    => 3,
         'prompt'    => 'How many times will President Oaks be quoted by another speaker?',
         'help_text' => 'A speaker quoting or citing President Oaks by name.',
-        'config'    => ['line' => 8],
+        'config'    => ['line' => 8.5],   // half-point: no ties here either
     ];
 
     // ---- 8. Participation (4 pts) ----

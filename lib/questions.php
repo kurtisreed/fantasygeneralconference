@@ -37,7 +37,7 @@ function section_meta(): array
         ],
         'words' => [
             'title' => 'Over / under',
-            'blurb' => 'Pick a side. Three points each. An exact tie scores nothing.',
+            'blurb' => 'Pick a side. Three points each. Every line ends in a half, so there are no ties.',
             'layout' => 'list',
         ],
         'watched' => [
