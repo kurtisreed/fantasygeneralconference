@@ -30,6 +30,19 @@ function make_entry_code(int $len = 6): string
 
 function redirect(string $url): never
 {
+    // If a page has already started printing, header() is a silent no-op and
+    // the browser just re-renders stale form state. Fall back to markup so the
+    // navigation still happens.
+    if (headers_sent()) {
+        printf(
+            '<meta http-equiv="refresh" content="0;url=%1$s">'
+            . '<script>location.replace(%2$s);</script>'
+            . '<p>Saved. <a href="%1$s">Continue</a>.</p>',
+            htmlspecialchars($url, ENT_QUOTES, 'UTF-8'),
+            json_encode($url)
+        );
+        exit;
+    }
     header('Location: ' . $url);
     exit;
 }

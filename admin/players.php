@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/_head.php';
-[$admin, $event] = admin_page('Players', 'players.php');
+[$admin, $event] = admin_guard();
 $eventId = (int)$event['id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -21,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     redirect('players.php');
 }
+
+admin_chrome('Players', 'players.php');
 
 $players = q(
     'SELECT p.*, COALESCE(SUM(s.points),0) AS total,

@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/_head.php';
-[$admin, $event] = admin_page('Text answers', 'adjudicate.php');
+[$admin, $event] = admin_guard();
 
 $eventId = (int)$event['id'];
 $questions = array_filter(get_questions($eventId), static fn($q) => $q['type'] === 'text');
@@ -27,6 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     flash("Rulings saved. Scores recomputed ($n scoring rows).");
     redirect('adjudicate.php');
 }
+
+admin_chrome('Text answers', 'adjudicate.php');
 
 $results = get_results($eventId);
 ?>

@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/_head.php';
-[$admin, $event] = admin_page('Event', 'event.php');
+[$admin, $event] = admin_guard();
 $eventId = (int)$event['id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -10,9 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $n = recompute_event_scores($eventId);
         flash("Rescored everyone ($n scoring rows).");
     } else {
+        // Keep the current status if the field is missing or unrecognised.
+        // Defaulting to 'draft' here silently closed events that were open.
         $status = (string)post('status');
         if (!in_array($status, ['draft', 'open', 'locked', 'final'], true)) {
-            $status = 'draft';
+            $status = (string)$event['status'];
         }
         $lock = (string)post('lock_at');
         exec_sql(
@@ -23,6 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     redirect('event.php');
 }
+
+admin_chrome('Event', 'event.php');
 
 $lockValue = $event['lock_at'] ? date('Y-m-d\TH:i', strtotime((string)$event['lock_at'])) : '';
 $statuses = [
@@ -59,7 +63,12 @@ $statuses = [
 
 <div class="card">
   <h2>Share this link</h2>
-  <p class="code code-wrap"><?= e((isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . dirname($_SERVER['PHP_SELF'] ?? '', 2) . '/') ?></p>
+  <?php
+    $base = rtrim(str_replace('\\', '/', dirname((string)($_SERVER['PHP_SELF'] ?? ''), 2)), '/');
+    $share = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http')
+           . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $base . '/';
+  ?>
+  <p class="code code-wrap"><?= e($share) ?></p>
 </div>
 
 <div class="card">

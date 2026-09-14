@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/_head.php';
-[$admin, $event] = admin_page('Results', 'results.php');
+[$admin, $event] = admin_guard();
 
 $eventId = (int)$event['id'];
 $questions = get_questions($eventId);
@@ -40,6 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     flash("Results saved. Scores recomputed ($n scoring rows).");
     redirect('results.php');
 }
+
+admin_chrome('Results', 'results.php');
 
 $results = get_results($eventId);
 $sections = group_by_section($questions);

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/_head.php';
 require_once APP_ROOT . '/lib/seed.php';
-[$admin, $event] = admin_page('Questions', 'questions.php');
+[$admin, $event] = admin_guard();
 $eventId = (int)$event['id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -34,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     flash('Questions updated and scores recomputed.');
     redirect('questions.php');
 }
+
+admin_chrome('Questions', 'questions.php');
 
 $questions = get_questions($eventId, true);
 $sections = group_by_section($questions);

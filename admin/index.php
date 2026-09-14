@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/_head.php';
-[$admin, $event] = admin_page('Dashboard', 'index.php');
+[$admin, $event] = admin_guard();
 
 $eventId = (int)$event['id'];
 $questions = get_questions($eventId);
@@ -34,6 +34,7 @@ foreach ($questions as $qq) {
         }
     }
 }
+admin_chrome('Dashboard', 'index.php');
 ?>
 <section class="hero compact">
   <p class="eyebrow"><?= e($event['name']) ?> · <span class="status status-<?= e($event['status']) ?>"><?= e($event['status']) ?></span></p>
