@@ -29,27 +29,23 @@ const FGC_APOSTLES = [
 /**
  * The colour palette for the tie and choir questions.
  *
- * Deliberately coarse: each entry should be a colour a room full of people
- * would agree on from across a chapel. Splitting hairs (navy vs. midnight)
- * just moves the argument from the scorekeeper to the players.
+ * Basic colour names only. Anyone watching should be able to name the colour
+ * from across the room and land on the same answer as everybody else; finer
+ * shades (navy vs. royal, gold vs. yellow) only move the argument from the
+ * scorekeeper to the players.
  */
 const FGC_COLORS = [
-    'red'        => 'Red',
-    'burgundy'   => 'Burgundy / maroon',
-    'pink'       => 'Pink',
-    'orange'     => 'Orange',
-    'gold'       => 'Gold / yellow',
-    'green'      => 'Green',
-    'teal'       => 'Teal / aqua',
-    'light_blue' => 'Light blue',
-    'royal_blue' => 'Royal blue',
-    'navy'       => 'Navy / dark blue',
-    'purple'     => 'Purple',
-    'gray'       => 'Gray / silver',
-    'brown'      => 'Brown / tan',
-    'black'      => 'Black',
-    'white'      => 'White / cream',
-    'patterned'  => 'Patterned / multicolored',
+    'red'    => 'Red',
+    'pink'   => 'Pink',
+    'orange' => 'Orange',
+    'yellow' => 'Yellow',
+    'green'  => 'Green',
+    'blue'   => 'Blue',
+    'purple' => 'Purple',
+    'gray'   => 'Gray',
+    'brown'  => 'Brown',
+    'black'  => 'Black',
+    'white'  => 'White',
 ];
 
 const FGC_SESSIONS = [
