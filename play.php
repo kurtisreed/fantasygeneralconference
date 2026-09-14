@@ -95,6 +95,7 @@ page_head('Your sheet');
         <?php foreach ($qs[0]['options'] as $o): ?>
           <span class="grid-col"><?= e($o['label']) ?></span>
         <?php endforeach; ?>
+        <span></span><?php // matches the clear button's column ?>
       </div>
       <?php foreach ($qs as $qq):
           $qid = (int)$qq['id'];

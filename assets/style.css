@@ -184,7 +184,6 @@ input.mini { width: 72px; padding: 6px 8px; }
 /* ---------- apostle grid ---------- */
 .grid-head {
   display: none;
-  grid-template-columns: 1fr repeat(4, 62px);
   gap: 6px; align-items: end; padding: 10px 0 6px;
   border-bottom: 1px solid var(--line); margin-top: 10px;
 }
@@ -204,15 +203,19 @@ input.mini { width: 72px; padding: 6px 8px; }
 .clear-row:hover { border-color: var(--bad); color: var(--bad); }
 
 @media (min-width: 620px) {
+  /* One template for both, or the header labels drift out of line with the
+     buttons — the row reserves a trailing column for the clear button. */
+  .grid-head, .grid-row {
+    display: grid;
+    grid-template-columns: 1fr repeat(4, 62px) 40px;
+    gap: 6px;
+  }
   /* Sticky so you can still tell Sat AM from Sun PM 15 rows down. */
   .grid-head {
-    display: grid; position: sticky; top: 0; z-index: 2;
+    position: sticky; top: 0; z-index: 2;
     background: var(--card); padding-top: 14px;
   }
-  .grid-row {
-    display: grid; grid-template-columns: 1fr repeat(4, 62px) 40px;
-    gap: 6px; align-items: center;
-  }
+  .grid-row { align-items: center; }
   .grid-name { margin: 0; }
   .grid-choices { display: contents; }
   .grid-choices .chip span { padding: 10px 2px; font-size: 0; }
