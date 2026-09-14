@@ -4,11 +4,17 @@ require_once __DIR__ . '/lib/bootstrap.php';
 require_once APP_ROOT . '/lib/questions.php';
 require_once APP_ROOT . '/lib/scoring.php';
 
-$events = get_events();
+// A conference still in draft with nobody in it isn't news to players — it's
+// the scorekeeper setting up the next one. Keep it off the public list.
+$events = array_values(array_filter(
+    get_events(),
+    static fn(array $e) => $e['status'] !== 'draft' || (int)$e['player_count'] > 0
+));
 if (!$events) {
     exit('No conferences set up yet.');
 }
-$newest = (int)$events[0]['id'];
+$live = get_event();
+$newest = $live ? (int)$live['id'] : (int)$events[0]['id'];
 
 page_head('Past conferences');
 ?>

@@ -91,25 +91,41 @@ Scores recompute automatically whenever you save results or sessions watched.
 
 ## Running another conference
 
-Every six months:
+Every six months, from **Admin → Conferences → Start the next conference**. The
+form is prefilled with the next conference's name, short name and date, worked
+out from the weekend whose Sunday is the first Sunday of April or October —
+which is why October 2023 correctly lands on Sept 30, not Oct 7. Adjust
+anything that isn't right and create it.
+
+It starts in draft, so nothing changes for players until you open it on the
+Event page. Then:
+
+1. **Questions** — check the over/under lines against the last two conferences
+   (`tools/count_words.php`) and move them if the trend has shifted.
+2. **Speaker list** — `FGC_APOSTLES` in `lib/seed.php` if the First Presidency
+   or Quorum of the Twelve has changed. Editing that file and re-creating is
+   the only part that still needs a text editor.
+3. **Event** — flip the status to *open* and share the link.
+
+There is a command-line equivalent if you'd rather:
 
 ```bash
 php tools/new_conference.php april-2027 "April 2027 General Conference" \
      --lock="2027-04-03 10:00"
 ```
 
-That creates the event and its questions, and sets the moment picks freeze
-(normally the start of the Saturday morning session, Mountain Time). Add
-`--open` to open it for picks right away instead of leaving it in draft.
+### How the app decides which conference is "current"
 
-Players always see the most recent conference by date, and every earlier one
-stays readable: `conferences.php` lists them all with their winners, and
-`leaderboard.php?event=<slug>` shows any conference's standings. In the admin,
-**Conferences** switches which one you are working on.
+Players see the most recent conference **by date** that isn't in draft. That
+means setting up the next one early can't hide the one people are still
+playing, and a past conference backfilled today sorts by when it happened
+rather than when you entered it.
 
-Pass `--lock` whenever you can. It sets `starts_at`, which is what decides
-which conference counts as current — so a past conference backfilled today
-sorts by when it happened, not by when you entered it.
+Every earlier conference stays readable: `conferences.php` lists them with
+their winners, and `leaderboard.php?event=<slug>` shows any conference's
+standings. In the admin, **Conferences** switches which one you're working on,
+and a coloured bar on every page says whether it's the live one, a past one, or
+one you're setting up.
 
 Two things to check before each conference:
 

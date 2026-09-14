@@ -55,6 +55,45 @@ const FGC_SESSIONS = [
     ['sun_pm', 'Sunday Afternoon',   'Sun PM'],
 ];
 
+/**
+ * The Saturday and Sunday of a given conference.
+ *
+ * Conference is the weekend whose *Sunday* is the first Sunday of the month —
+ * not the first Saturday. In October 2023 that meant Sept 30 / Oct 1, which a
+ * first-Saturday rule gets wrong.
+ */
+function conference_weekend(int $year, int $month): array
+{
+    $sunday = strtotime('first sunday of ' . date('F', (int)mktime(0, 0, 0, $month, 1, $year)) . ' ' . $year);
+    return [date('Y-m-d', (int)strtotime('-1 day', (int)$sunday)), date('Y-m-d', (int)$sunday)];
+}
+
+/**
+ * The next conference after a date, as [slug, name, saturday, sunday].
+ * Used to prefill the "start the next conference" form.
+ */
+function next_conference_after(?string $after = null): array
+{
+    $after ??= date('Y-m-d');
+    $startYear = (int)date('Y', (int)strtotime($after));
+
+    for ($year = $startYear; $year <= $startYear + 3; $year++) {
+        foreach ([4, 10] as $month) {
+            [$sat, $sun] = conference_weekend($year, $month);
+            if ($sat > $after) {
+                $label = $month === 4 ? "April $year" : "October $year";
+                return [
+                    'slug'     => strtolower(str_replace(' ', '-', $label)),
+                    'name'     => $label . ' General Conference',
+                    'saturday' => $sat,
+                    'sunday'   => $sun,
+                ];
+            }
+        }
+    }
+    return ['slug' => '', 'name' => '', 'saturday' => '', 'sunday' => ''];
+}
+
 function fgc_seed(string $slug = 'october-2026', string $name = 'October 2026 General Conference'): int
 {
     $pdo = db();

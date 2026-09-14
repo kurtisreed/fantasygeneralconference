@@ -74,10 +74,22 @@ function admin_chrome(string $title, string $current = '', ?array $event = null)
     echo '</nav>';
 
     if ($event !== null) {
-        $newest = get_event();
-        $isCurrent = $newest && (int)$newest['id'] === (int)$event['id'];
-        echo '<div class="workingon' . ($isCurrent ? '' : ' past') . '">';
-        echo '<span class="workingon-label">' . ($isCurrent ? 'Working on' : 'Editing a past conference') . '</span>';
+        $live = get_event();   // what players are seeing right now
+        $when = static fn(array $e) => (string)($e['starts_at'] ?? $e['created_at'] ?? '');
+
+        if ($live && (int)$live['id'] === (int)$event['id']) {
+            $class = '';
+            $label = 'Working on';
+        } elseif ($live && $when($event) > $when($live)) {
+            $class = ' ahead';
+            $label = 'Setting up a future conference';
+        } else {
+            $class = ' past';
+            $label = 'Editing a past conference';
+        }
+
+        echo '<div class="workingon' . $class . '">';
+        echo '<span class="workingon-label">' . $label . '</span>';
         echo '<strong>' . e($event['name']) . '</strong>';
         echo '<a class="right" href="conferences.php">Switch</a>';
         echo '</div>';

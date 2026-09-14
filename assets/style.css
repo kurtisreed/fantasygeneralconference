@@ -341,3 +341,16 @@ table { width: 100%; border-collapse: collapse; }
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 .links-row { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+
+/* ---------- new-conference form ---------- */
+.field-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.field-row > div { flex: 1 1 160px; }
+.field-row input { width: 100%; }
+.checkline {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 600; font-size: 15px; margin-top: 4px;
+}
+.checkline input { width: 18px; height: 18px; margin: 0; flex: none; }
+.checkline span { font-weight: 500; }
+.workingon.ahead { background: var(--good-bg); border-bottom-color: var(--good); }
+.workingon.ahead .workingon-label { color: var(--good); }

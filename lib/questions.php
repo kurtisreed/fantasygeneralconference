@@ -56,9 +56,12 @@ function get_event(?string $slug = null): ?array
     if ($slug !== null) {
         return q1('SELECT * FROM events WHERE slug = ?', [$slug]);
     }
-    // The current conference is the latest by date, not by insertion order —
-    // a past conference added after the fact must not become "current".
-    return q1('SELECT * FROM events ORDER BY ' . EVENT_ORDER . ' LIMIT 1');
+    // Latest by date, not by insertion order — a past conference backfilled
+    // today must not become "current". Drafts are skipped so that setting up
+    // the next conference early cannot hide the one people are still playing;
+    // the fallback keeps a fresh install (everything still draft) working.
+    return q1('SELECT * FROM events WHERE status <> "draft" ORDER BY ' . EVENT_ORDER . ' LIMIT 1')
+        ?? q1('SELECT * FROM events ORDER BY ' . EVENT_ORDER . ' LIMIT 1');
 }
 
 function get_event_by_id(int $id): ?array
