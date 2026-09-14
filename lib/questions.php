@@ -27,7 +27,7 @@ function section_meta(): array
         ],
         'colors' => [
             'title' => 'Colors',
-            'blurb' => 'Three points each. Close enough counts — the scorekeeper decides.',
+            'blurb' => 'Three points each. Pick the closest color from the list.',
             'layout' => 'list',
         ],
         'counts' => [

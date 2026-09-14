@@ -16,7 +16,7 @@ upload the folder and it runs.
 | Who conducts each session | 4 | 4 |
 | First speaker of each session | 4 | 8 |
 | Which choir sings each session | 4 | 4 |
-| Tie colors (Oaks, Eyring, Christofferson) + choir dress | 4 | 12 |
+| Tie colors (Oaks, Eyring, Christofferson) + choir, from a fixed palette | 4 | 12 |
 | How many women pray / speak, and how many speakers are from outside the US | 3 | 9 |
 | Over/under on "Jesus Christ", "temple(s)", "covenant(s)", "Book of Mormon" | 4 | 12 |
 | Over/under on times President Oaks is quoted | 1 | 3 |
@@ -76,13 +76,15 @@ fallback in case PHP ever stops executing.
 4. Picks freeze automatically at the lock time, or flip status to *locked*.
 5. **Results** — after each session, fill in what you know. Saving recomputes
    every score, so the standings move between sessions.
-6. **Text answers** — rule on the tie/dress color spellings. Answers are
-   grouped by normalized text, so you rule once per spelling and everyone who
-   typed it gets the same call.
-7. **Players** — enter sessions watched when you score the sheets together.
+6. **Players** — enter sessions watched when you score the sheets together.
 
-Scores recompute automatically whenever you save results, rulings or sessions
-watched. `Event → Rescore everyone` is there for peace of mind.
+Every answer is a dropdown, a number or an over/under, so scoring is exact and
+there is nothing to arbitrate. Colors come from a fixed palette
+(`FGC_COLORS` in `lib/seed.php`) for the same reason — "navy" and "dark blue"
+can't be argued about if they're the same list entry.
+
+Scores recompute automatically whenever you save results or sessions watched.
+`Event → Rescore everyone` is there for peace of mind.
 
 ## Running another conference
 
@@ -116,7 +118,7 @@ index.php          name entry / resume with code
 play.php           the sheet
 submitted.php      confirmation + entry code
 leaderboard.php    standings, and one player's sheet with ?player=N
-admin/             login, dashboard, results, text rulings, players, questions, event
+admin/             login, dashboard, results, players, questions, event
 lib/               db, scoring engine, question loading, auth, layout
 sql/schema.sql     tables
 tools/install.php  one-time installer (delete after setup)
@@ -131,6 +133,7 @@ Adding a question means picking a type; the scoring engine already handles all o
 
 - `pick_one` — options list; renders as pills (≤6 options) or a dropdown
 - `number` — exact match, optional `tolerance` in config
-- `over_under` — `line` in config; player picks a side; exact tie = push
-- `text` — free text, resolved by the scorekeeper's rulings
+- `over_under` — `line` in config; player picks a side. Lines end in a half so
+  ties can't happen; the push branch remains for hand-set whole-number lines
+- `text` — free text, matched on normalized text (unused by the current sheet)
 - `watched` — self-reported participation, `per` points each up to `max`

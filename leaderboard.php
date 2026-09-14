@@ -64,10 +64,6 @@ page_head('Standings');
 
 <?php if ($detail):
     $answers = get_answers((int)$detail['id']);
-    $rulings = [];
-    foreach (q('SELECT tr.* FROM text_rulings tr JOIN questions q ON q.id=tr.question_id WHERE q.event_id=?', [$eventId]) as $r) {
-        $rulings[(int)$r['question_id']][$r['normalized']] = (bool)(int)$r['accepted'];
-    }
     $sections = group_by_section($questions); ?>
   <section class="card">
     <header class="section-head">
@@ -81,7 +77,7 @@ page_head('Standings');
             $qid = (int)$qq['id'];
             [$pts, $status] = score_answer(
                 $qq, $answers[$qid] ?? null, $results[$qid] ?? null,
-                $rulings[$qid] ?? [], (int)$detail['sessions_watched']
+                (int)$detail['sessions_watched']
             );
             $guess = $qq['type'] === 'watched'
                 ? (int)$detail['sessions_watched'] . ' session' . ($detail['sessions_watched'] == 1 ? '' : 's')

@@ -9,7 +9,7 @@ require_once __DIR__ . '/questions.php';
  * Returns [points, status] where status is one of:
  *   correct | wrong | push | pending | blank
  */
-function score_answer(array $question, ?string $answer, ?array $result, array $rulings = [], int $watched = 0): array
+function score_answer(array $question, ?string $answer, ?array $result, int $watched = 0): array
 {
     $pts = (int)$question['points'];
 
@@ -60,16 +60,12 @@ function score_answer(array $question, ?string $answer, ?array $result, array $r
             return $answer === $winner ? [$pts, 'correct'] : [0, 'wrong'];
 
         case 'text':
-            // Correct if the scorekeeper accepted this spelling, or it matches
-            // the official answer exactly once both are normalized.
-            $norm = normalize_text($answer);
-            if (isset($rulings[$norm])) {
-                return $rulings[$norm] ? [$pts, 'correct'] : [0, 'wrong'];
-            }
+            // Kept for any free-text question added later. Matches on the
+            // normalized text, so there is nothing for anyone to adjudicate.
             if (($result['value'] ?? '') === '') {
                 return [0, 'pending'];
             }
-            return $norm === normalize_text((string)$result['value'])
+            return normalize_text($answer) === normalize_text((string)$result['value'])
                 ? [$pts, 'correct']
                 : [0, 'wrong'];
     }
@@ -83,18 +79,6 @@ function recompute_event_scores(int $eventId): int
     $questions = get_questions($eventId);
     $results   = get_results($eventId);
     $players   = q('SELECT id, sessions_watched FROM players WHERE event_id = ?', [$eventId]);
-
-    // rulings[question_id][normalized] = bool
-    $rulings = [];
-    $rows = q(
-        'SELECT tr.* FROM text_rulings tr
-           JOIN questions q ON q.id = tr.question_id
-          WHERE q.event_id = ?',
-        [$eventId]
-    );
-    foreach ($rows as $r) {
-        $rulings[(int)$r['question_id']][$r['normalized']] = (bool)(int)$r['accepted'];
-    }
 
     $pdo = db();
     $pdo->beginTransaction();
@@ -116,7 +100,6 @@ function recompute_event_scores(int $eventId): int
                 $qq,
                 $answers[$qid] ?? null,
                 $results[$qid] ?? null,
-                $rulings[$qid] ?? [],
                 (int)$p['sessions_watched']
             );
             if ($pts !== 0) {

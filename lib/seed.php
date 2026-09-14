@@ -26,6 +26,32 @@ const FGC_APOSTLES = [
     'gilbert'        => 'Gilbert',
 ];
 
+/**
+ * The colour palette for the tie and choir questions.
+ *
+ * Deliberately coarse: each entry should be a colour a room full of people
+ * would agree on from across a chapel. Splitting hairs (navy vs. midnight)
+ * just moves the argument from the scorekeeper to the players.
+ */
+const FGC_COLORS = [
+    'red'        => 'Red',
+    'burgundy'   => 'Burgundy / maroon',
+    'pink'       => 'Pink',
+    'orange'     => 'Orange',
+    'gold'       => 'Gold / yellow',
+    'green'      => 'Green',
+    'teal'       => 'Teal / aqua',
+    'light_blue' => 'Light blue',
+    'royal_blue' => 'Royal blue',
+    'navy'       => 'Navy / dark blue',
+    'purple'     => 'Purple',
+    'gray'       => 'Gray / silver',
+    'brown'      => 'Brown / tan',
+    'black'      => 'Black',
+    'white'      => 'White / cream',
+    'patterned'  => 'Patterned / multicolored',
+];
+
 const FGC_SESSIONS = [
     ['sat_am', 'Saturday Morning',   'Sat AM'],
     ['sat_pm', 'Saturday Afternoon', 'Sat PM'],
@@ -130,22 +156,30 @@ function fgc_seed(string $slug = 'october-2026', string $name = 'October 2026 Ge
     }
 
     // ---- 5. Colors (12 pts) ----
-    $defs[] = [
-        'qkey' => 'tie_oaks', 'section' => 'colors', 'type' => 'text', 'points' => 3,
-        'prompt' => 'What color tie will President Oaks wear when he speaks?',
+    // A fixed palette, so a colour answer is either right or wrong and nobody
+    // has to arbitrate whether "navy" and "dark blue" are the same thing.
+    $colorOptions = [];
+    $i = 0;
+    foreach (FGC_COLORS as $value => $label) {
+        $colorOptions[] = [$value, $label, $i++];
+    }
+
+    $colorQuestions = [
+        ['tie_oaks',           'What color tie will President Oaks wear when he speaks?'],
+        ['tie_eyring',         'What color tie will President Eyring wear when he speaks?'],
+        ['tie_christofferson', 'What color tie will President Christofferson wear when he speaks?'],
+        ['choir_dress',        'What color will the women in the Tabernacle Choir wear on Sunday morning?'],
     ];
-    $defs[] = [
-        'qkey' => 'tie_eyring', 'section' => 'colors', 'type' => 'text', 'points' => 3,
-        'prompt' => 'What color tie will President Eyring wear when he speaks?',
-    ];
-    $defs[] = [
-        'qkey' => 'tie_christofferson', 'section' => 'colors', 'type' => 'text', 'points' => 3,
-        'prompt' => 'What color tie will President Christofferson wear when he speaks?',
-    ];
-    $defs[] = [
-        'qkey' => 'choir_dress', 'section' => 'colors', 'type' => 'text', 'points' => 3,
-        'prompt' => 'What color dress will the women in the Tabernacle Choir wear on Sunday morning?',
-    ];
+    foreach ($colorQuestions as [$key, $prompt]) {
+        $defs[] = [
+            'qkey'    => $key,
+            'section' => 'colors',
+            'type'    => 'pick_one',
+            'points'  => 3,
+            'prompt'  => $prompt,
+            'options' => $colorOptions,
+        ];
+    }
 
     // ---- 6. Counting questions (6 pts) ----
     $defs[] = [

@@ -29,7 +29,6 @@ function admin_chrome(string $title, string $current = ''): void
     $nav = [
         'index.php'      => 'Dashboard',
         'results.php'    => 'Results',
-        'adjudicate.php' => 'Text answers',
         'players.php'    => 'Players',
         'questions.php'  => 'Questions',
         'event.php'      => 'Event',

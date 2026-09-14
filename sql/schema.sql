@@ -86,16 +86,6 @@ CREATE TABLE IF NOT EXISTS results (
   CONSTRAINT fk_result_question FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Admin rulings on free-text answers: which spellings count as correct.
-CREATE TABLE IF NOT EXISTS text_rulings (
-  id          INT AUTO_INCREMENT PRIMARY KEY,
-  question_id INT NOT NULL,
-  normalized  VARCHAR(255) NOT NULL,
-  accepted    TINYINT(1) NOT NULL DEFAULT 0,
-  UNIQUE KEY uq_ruling (question_id, normalized),
-  CONSTRAINT fk_ruling_question FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 CREATE TABLE IF NOT EXISTS scores (
   player_id   INT NOT NULL,
   question_id INT NOT NULL,

@@ -73,7 +73,7 @@ $statuses = [
 
 <div class="card">
   <h2>Recompute</h2>
-  <p class="muted">Scores recompute automatically when you save results, rulings or sessions watched. This is here for when you want to be sure.</p>
+  <p class="muted">Scores recompute automatically when you save results or sessions watched. This is here for when you want to be sure.</p>
   <form method="post">
     <?= csrf_field() ?>
     <input type="hidden" name="action" value="rescore">
