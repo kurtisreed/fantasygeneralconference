@@ -158,6 +158,12 @@ function fgc_seed(string $slug = 'april-2026', string $name = 'April 2026 Genera
         'prompt' => 'How many women will speak?',
         'config' => ['min' => 0, 'max' => 12],
     ];
+    $defs[] = [
+        'qkey' => 'speakers_outside_us', 'section' => 'counts', 'type' => 'number', 'points' => 3,
+        'prompt' => 'How many speakers will be from outside the United States?',
+        'help_text' => 'Going by where they were born — Church leader biographies list it.',
+        'config' => ['min' => 0, 'max' => 20],
+    ];
 
     // ---- 7. Over/under word counts (15 pts) ----
     $words = [

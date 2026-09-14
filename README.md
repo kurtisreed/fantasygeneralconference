@@ -8,7 +8,7 @@ standings update live.
 Vanilla PHP 8 + MySQL/MariaDB. No framework, no Composer, no build step —
 upload the folder and it runs.
 
-## The sheet (68 points)
+## The sheet (71 points)
 
 | Section | Questions | Points |
 |---|---:|---:|
@@ -17,7 +17,7 @@ upload the folder and it runs.
 | First speaker of each session | 4 | 8 |
 | Which choir sings each session | 4 | 4 |
 | Tie colors (Oaks, Eyring, Christofferson) + choir dress | 4 | 12 |
-| How many women pray / speak | 2 | 6 |
+| How many women pray / speak, and how many speakers are from outside the US | 3 | 9 |
 | Over/under on "Jesus Christ", "temple", "covenant", "Book of Mormon" | 4 | 12 |
 | Over/under on times President Oaks is quoted | 1 | 3 |
 | Sessions watched (1 pt each) | 1 | 4 |
