@@ -62,6 +62,7 @@ function admin_chrome(string $title, string $current = '', ?array $event = null)
         'index.php'      => 'Dashboard',
         'results.php'    => 'Results',
         'players.php'    => 'Players',
+        'speakers.php'   => 'Speakers',
         'questions.php'  => 'Questions',
         'event.php'      => 'Event',
     ];

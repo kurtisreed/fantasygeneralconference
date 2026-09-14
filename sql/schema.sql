@@ -104,3 +104,15 @@ CREATE TABLE IF NOT EXISTS admins (
   created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uq_admin (username)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- The speaking leaders for a conference. Kept per conference so a past one
+-- keeps the list it was actually played with.
+CREATE TABLE IF NOT EXISTS speakers (
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  event_id    INT NOT NULL,
+  slug        VARCHAR(64)  NOT NULL,
+  name        VARCHAR(120) NOT NULL,
+  sort_order  INT NOT NULL DEFAULT 0,
+  UNIQUE KEY uq_speaker (event_id, slug),
+  CONSTRAINT fk_speaker_event FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

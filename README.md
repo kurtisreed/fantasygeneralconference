@@ -81,6 +81,12 @@ fallback in case PHP ever stops executing.
    every score, so the standings move between sessions.
 6. **Players** — enter sessions watched when you score the sheets together.
 
+**Speakers** edits the names in the "who speaks when" grid and the choices for
+who conducts and who speaks first. The list belongs to the conference, so a
+past one keeps the names it was played with. Renaming somebody keeps their
+picks; removing them deletes that row of the grid and every pick on it, and
+the page says so before you save.
+
 Every answer is a dropdown, a number or an over/under, so scoring is exact and
 there is nothing to arbitrate. Colors come from a fixed palette
 (`FGC_COLORS` in `lib/seed.php`) for the same reason — "navy" and "dark blue"
@@ -100,11 +106,11 @@ anything that isn't right and create it.
 It starts in draft, so nothing changes for players until you open it on the
 Event page. Then:
 
-1. **Questions** — check the over/under lines against the last two conferences
+1. **Speakers** — the new conference inherits the previous one's list, so this
+   only needs touching when the First Presidency or Quorum of the Twelve
+   actually changes.
+2. **Questions** — check the over/under lines against the last two conferences
    (`tools/count_words.php`) and move them if the trend has shifted.
-2. **Speaker list** — `FGC_APOSTLES` in `lib/seed.php` if the First Presidency
-   or Quorum of the Twelve has changed. Editing that file and re-creating is
-   the only part that still needs a text editor.
 3. **Event** — flip the status to *open* and share the link.
 
 There is a command-line equivalent if you'd rather:
@@ -145,7 +151,7 @@ play.php           the sheet
 submitted.php      confirmation + entry code
 leaderboard.php    standings; ?event=<slug> for a past one, ?player=N for a sheet
 conferences.php    every conference and its winner
-admin/             login, conferences, dashboard, results, players, questions, event
+admin/             login, conferences, dashboard, results, players, speakers, questions, event
 lib/               db, scoring engine, question loading, auth, layout
 sql/schema.sql     tables
 tools/install.php  one-time installer (delete after setup)

@@ -354,3 +354,16 @@ table { width: 100%; border-collapse: collapse; }
 .checkline span { font-weight: 500; }
 .workingon.ahead { background: var(--good-bg); border-bottom-color: var(--good); }
 .workingon.ahead .workingon-label { color: var(--good); }
+
+/* ---------- speaker list ---------- */
+.speakers { width: 100%; }
+.speakers th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em;
+               color: var(--ink-soft); text-align: left; padding: 6px 6px; }
+.speakers td { padding: 4px 6px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.speakers input[type=text] { width: 100%; padding: 8px 10px; }
+.sp-num { width: 30px; color: var(--ink-soft); font-variant-numeric: tabular-nums;
+          font-size: 13px; text-align: right; }
+.sp-rm { width: 64px; text-align: center; }
+.sp-rm input { width: 18px; height: 18px; }
+.sp-new .sp-num { color: var(--accent); font-weight: 700; }
+.notice-block { display: block; background: var(--card); border: 1px solid var(--line); }

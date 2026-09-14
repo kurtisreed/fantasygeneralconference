@@ -94,6 +94,179 @@ function next_conference_after(?string $after = null): array
     return ['slug' => '', 'name' => '', 'saturday' => '', 'sunday' => ''];
 }
 
+require_once __DIR__ . '/questions.php';
+
+function get_speakers(int $eventId): array
+{
+    return q('SELECT * FROM speakers WHERE event_id = ? ORDER BY sort_order, id', [$eventId]);
+}
+
+/** Turn a typed name into a stable key: "Caussé" -> "causse". */
+function speaker_slug(string $name): string
+{
+    $s = strtr($name, [
+        'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e', 'á' => 'a', 'à' => 'a',
+        'â' => 'a', 'ä' => 'a', 'í' => 'i', 'ì' => 'i', 'î' => 'i', 'ï' => 'i',
+        'ó' => 'o', 'ò' => 'o', 'ô' => 'o', 'ö' => 'o', 'ú' => 'u', 'ù' => 'u',
+        'û' => 'u', 'ü' => 'u', 'ñ' => 'n', 'ç' => 'c',
+    ]);
+    $s = mb_strtolower($s, 'UTF-8');
+    $s = preg_replace('/[^a-z0-9]+/', '_', $s) ?? $s;
+    return trim((string)$s, '_');
+}
+
+/**
+ * Give an event a speaker list if it has none: inherit the previous
+ * conference's, so the names only need typing when they actually change.
+ */
+function fgc_ensure_speakers(int $eventId): array
+{
+    if ($rows = get_speakers($eventId)) {
+        return $rows;
+    }
+
+    $prev = q1(
+        'SELECT s.event_id FROM speakers s
+           JOIN events e ON e.id = s.event_id
+          WHERE e.id <> ?
+          ORDER BY COALESCE(e.starts_at, DATE(e.lock_at), DATE(e.created_at)) DESC, e.id DESC
+          LIMIT 1',
+        [$eventId]
+    );
+
+    $source = [];
+    if ($prev) {
+        foreach (get_speakers((int)$prev['event_id']) as $r) {
+            $source[] = [$r['slug'], $r['name']];
+        }
+    } else {
+        foreach (FGC_APOSTLES as $s => $n) {
+            $source[] = [$s, $n];
+        }
+    }
+
+    $i = 0;
+    foreach ($source as [$s, $n]) {
+        exec_sql(
+            'INSERT INTO speakers (event_id, slug, name, sort_order) VALUES (?,?,?,?)
+             ON DUPLICATE KEY UPDATE name=VALUES(name), sort_order=VALUES(sort_order)',
+            [$eventId, $s, $n, $i++]
+        );
+    }
+    return get_speakers($eventId);
+}
+
+function set_question_options(int $questionId, array $options): void
+{
+    exec_sql('DELETE FROM question_options WHERE question_id = ?', [$questionId]);
+    foreach ($options as [$value, $label, $ord]) {
+        exec_sql(
+            'INSERT INTO question_options (question_id, value, label, sort_order) VALUES (?,?,?,?)',
+            [$questionId, $value, $label, $ord]
+        );
+    }
+}
+
+/** Drop picks that no longer match any option — e.g. after a speaker is removed. */
+function fgc_prune_answers(int $eventId): int
+{
+    $dropped = 0;
+    foreach (get_questions($eventId, true) as $qq) {
+        if ($qq['type'] !== 'pick_one' || !$qq['options']) {
+            continue;
+        }
+        $valid = array_column($qq['options'], 'value');
+        $in = implode(',', array_fill(0, count($valid), '?'));
+        $dropped += exec_sql(
+            "DELETE FROM answers WHERE question_id = ? AND value NOT IN ($in)",
+            array_merge([(int)$qq['id']], $valid)
+        );
+    }
+    return $dropped;
+}
+
+/** Put the questions back in sheet order after the speaker list changes. */
+function fgc_renumber(int $eventId): void
+{
+    $pos = 0;
+    foreach (array_keys(section_meta()) as $section) {
+        foreach (q('SELECT id FROM questions WHERE event_id=? AND section=? ORDER BY sort_order, id',
+                   [$eventId, $section]) as $r) {
+            exec_sql('UPDATE questions SET sort_order = ? WHERE id = ?', [$pos++, (int)$r['id']]);
+        }
+    }
+}
+
+/**
+ * Rebuild everything derived from the speaker list: one grid question per
+ * speaker, and the speaker options on the conducting and first-speaker
+ * questions. Point values already set by hand are kept.
+ *
+ * Returns ['removed' => grid rows dropped, 'dropped' => picks invalidated].
+ */
+function fgc_sync_speakers(int $eventId): array
+{
+    $pdo = db();
+    $owns = !$pdo->inTransaction();
+    if ($owns) {
+        $pdo->beginTransaction();
+    }
+
+    $speakers = fgc_ensure_speakers($eventId);
+
+    $sessionOptions = [];
+    foreach (q('SELECT * FROM sessions WHERE event_id=? ORDER BY sort_order', [$eventId]) as $i => $s) {
+        $sessionOptions[] = [$s['code'], $s['short_name'], $i];
+    }
+
+    $speakerOptions = [];
+    $wanted = [];
+    foreach ($speakers as $i => $s) {
+        $speakerOptions[] = [$s['slug'], $s['name'], $i];
+        $wanted['apostle_' . $s['slug']] = true;
+    }
+
+    foreach ($speakers as $i => $s) {
+        $qkey = 'apostle_' . $s['slug'];
+        $existing = q1('SELECT points FROM questions WHERE event_id=? AND qkey=?', [$eventId, $qkey]);
+        exec_sql(
+            'INSERT INTO questions (event_id, qkey, section, type, prompt, points, sort_order, active)
+             VALUES (?,?,"apostles","pick_one",?,?,?,1)
+             ON DUPLICATE KEY UPDATE prompt=VALUES(prompt), points=VALUES(points),
+                                     sort_order=VALUES(sort_order), active=1',
+            [$eventId, $qkey, $s['name'], $existing ? (int)$existing['points'] : 1, $i]
+        );
+        $qid = (int)q1('SELECT id FROM questions WHERE event_id=? AND qkey=?', [$eventId, $qkey])['id'];
+        set_question_options($qid, $sessionOptions);
+    }
+
+    $removed = 0;
+    foreach (q('SELECT id, qkey FROM questions WHERE event_id=? AND section="apostles"', [$eventId]) as $row) {
+        if (!isset($wanted[$row['qkey']])) {
+            exec_sql('DELETE FROM questions WHERE id = ?', [(int)$row['id']]);
+            $removed++;
+        }
+    }
+
+    $firstOptions = $speakerOptions;
+    $firstOptions[] = ['other', 'Someone else (Seventy, auxiliary leader, etc.)', 99];
+    foreach (q('SELECT id, section FROM questions WHERE event_id=? AND section IN ("conducting","first_speaker")',
+               [$eventId]) as $row) {
+        set_question_options(
+            (int)$row['id'],
+            $row['section'] === 'first_speaker' ? $firstOptions : $speakerOptions
+        );
+    }
+
+    $dropped = fgc_prune_answers($eventId);
+    fgc_renumber($eventId);
+
+    if ($owns) {
+        $pdo->commit();
+    }
+    return ['removed' => $removed, 'dropped' => $dropped];
+}
+
 function fgc_seed(string $slug = 'october-2026', string $name = 'October 2026 General Conference'): int
 {
     $pdo = db();
@@ -124,22 +297,25 @@ function fgc_seed(string $slug = 'october-2026', string $name = 'October 2026 Ge
         $sessionOptions[] = [$code, $short, $i];
     }
 
+    // The speaker list belongs to the conference, not to this file — a new
+    // conference inherits the previous one's until somebody edits it.
+    $speakers = fgc_ensure_speakers($eventId);
+
     $apostleOptions = [];
-    $i = 0;
-    foreach (FGC_APOSTLES as $v => $l) {
-        $apostleOptions[] = [$v, $l, $i++];
+    foreach ($speakers as $i => $s) {
+        $apostleOptions[] = [$s['slug'], $s['name'], $i];
     }
 
     $order = 0;
     $defs = [];
 
-    // ---- 1. Apostle grid: one row per apostle, one session each (15 pts) ----
-    foreach (FGC_APOSTLES as $value => $label) {
+    // ---- 1. Apostle grid: one row per speaker, one session each ----
+    foreach ($speakers as $s) {
         $defs[] = [
-            'qkey'    => 'apostle_' . $value,
+            'qkey'    => 'apostle_' . $s['slug'],
             'section' => 'apostles',
             'type'    => 'pick_one',
-            'prompt'  => $label,
+            'prompt'  => $s['name'],
             'points'  => 1,
             'options' => $sessionOptions,
         ];
