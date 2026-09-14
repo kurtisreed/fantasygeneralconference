@@ -192,6 +192,6 @@ page_head('Your sheet');
 <?php endif; ?>
 </form>
 
-<script src="assets/app.js"></script>
+<script src="<?= e(asset_url('assets/app.js')) ?>"></script>
 <?php
 page_foot();

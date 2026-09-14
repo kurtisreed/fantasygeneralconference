@@ -28,6 +28,14 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Standings change between sessions, so nothing here may be cached. PHP's
+// session cache limiter already sends these; say it explicitly so the pages
+// behave the same however they happen to be served.
+if (PHP_SAPI !== 'cli' && !headers_sent()) {
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Pragma: no-cache');
+}
+
 require_once APP_ROOT . '/lib/util.php';
 require_once APP_ROOT . '/lib/db.php';
 require_once APP_ROOT . '/lib/csrf.php';
