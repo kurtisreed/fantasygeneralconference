@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Question definitions for the April 2026 sheet.
+ * Question definitions for the sheet.
  *
  * Re-running the seed RESETS prompts, point values and over/under lines to the
  * defaults below. Player answers and results are never touched.
@@ -33,7 +33,7 @@ const FGC_SESSIONS = [
     ['sun_pm', 'Sunday Afternoon',   'Sun PM'],
 ];
 
-function fgc_seed(string $slug = 'april-2026', string $name = 'April 2026 General Conference'): int
+function fgc_seed(string $slug = 'october-2026', string $name = 'October 2026 General Conference'): int
 {
     $pdo = db();
     $pdo->beginTransaction();

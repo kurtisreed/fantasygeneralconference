@@ -1,6 +1,6 @@
 <?php
 /**
- * One-time installer: creates the tables, seeds the April 2026 sheet and
+ * One-time installer: creates the tables, seeds the current sheet and
  * creates the first admin account.
  *
  * Local:  php tools/install.php

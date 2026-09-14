@@ -86,9 +86,28 @@ watched. `Event → Rescore everyone` is there for peace of mind.
 
 ## Running another conference
 
-The seed only knows April 2026. For the next one, copy `fgc_seed()` in
-`lib/seed.php`, change the slug, name and speaker list, and call it. Everything
-else — scoring, admin, standings — is generic and needs no changes.
+Every six months:
+
+```bash
+php tools/new_conference.php april-2027 "April 2027 General Conference" \
+     --lock="2027-04-03 10:00"
+```
+
+That creates the event and its questions, and sets the moment picks freeze
+(normally the start of the Saturday morning session, Mountain Time). The site
+always shows the newest event, so the previous conference stays intact as
+history. Add `--open` to open it for picks right away instead of leaving it in
+draft.
+
+Two things to check before each conference:
+
+1. **The speaker list** in `lib/seed.php` (`FGC_APOSTLES`) — update it if the
+   First Presidency or Quorum of the Twelve has changed.
+2. **The over/under lines** — re-run `tools/count_words.php` against the two
+   most recent conferences and move the lines if the trend has shifted. See
+   [docs/word-counts.md](docs/word-counts.md).
+
+Everything else — scoring, admin, standings — is generic and needs no changes.
 
 ## Layout
 
@@ -101,7 +120,8 @@ admin/             login, dashboard, results, text rulings, players, questions, 
 lib/               db, scoring engine, question loading, auth, layout
 sql/schema.sql     tables
 tools/install.php  one-time installer (delete after setup)
-tools/count_words.php  fetches conference talks and counts the over/under words
+tools/count_words.php   fetches conference talks and counts the over/under words
+tools/new_conference.php  sets up the sheet for the next conference
 docs/word-counts.md    historical counts, counting rules, how the lines were set
 ```
 
