@@ -69,8 +69,8 @@ fallback in case PHP ever stops executing.
 ## Running the game
 
 0. **Conferences** — pick which one you're working on. Everything else in the
-   admin applies to that choice, and it sticks until you switch. A red bar
-   across the top says so whenever you're editing a past conference.
+   admin applies to that choice, and it sticks until you switch. A bar across
+   the top names it, coloured when it isn't the conference players are seeing.
 1. **Questions** — set the over/under lines and any point changes.
 2. **Event** — set a lock time (Mountain Time) and flip status to *open*.
    Share the site link.
@@ -132,14 +132,6 @@ their winners, and `leaderboard.php?event=<slug>` shows any conference's
 standings. In the admin, **Conferences** switches which one you're working on,
 and a coloured bar on every page says whether it's the live one, a past one, or
 one you're setting up.
-
-Two things to check before each conference:
-
-1. **The speaker list** in `lib/seed.php` (`FGC_APOSTLES`) — update it if the
-   First Presidency or Quorum of the Twelve has changed.
-2. **The over/under lines** — re-run `tools/count_words.php` against the two
-   most recent conferences and move the lines if the trend has shifted. See
-   [docs/word-counts.md](docs/word-counts.md).
 
 Everything else — scoring, admin, standings — is generic and needs no changes.
 
