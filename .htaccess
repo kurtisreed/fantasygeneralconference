@@ -1,0 +1,8 @@
+# Shared-hosting safety net: if PHP ever stops executing, don't serve secrets
+# or the schema as plain text.
+<FilesMatch "^(config\.php|config\.example\.php)$">
+    Require all denied
+</FilesMatch>
+
+RedirectMatch 404 /sql/
+RedirectMatch 404 /lib/
