@@ -14,14 +14,26 @@ foreach ($askable as $qq) {
     }
 }
 $players = (int)q1('SELECT COUNT(*) c FROM players WHERE event_id=? AND submitted_at IS NOT NULL', [$eventId])['c'];
-$pending = (int)q1(
-    'SELECT COUNT(DISTINCT q.id) c FROM questions q
-       JOIN answers a ON a.question_id = q.id
-      WHERE q.event_id = ? AND q.type = "text"
-        AND NOT EXISTS (SELECT 1 FROM text_rulings tr WHERE tr.question_id = q.id
-                        AND tr.normalized = LOWER(TRIM(a.value)))',
-    [$eventId]
-)['c'];
+// Count in PHP so this matches normalize_text() exactly — SQL's LOWER(TRIM())
+// normalizes less than we do and would over-report.
+$ruled = [];
+foreach (q('SELECT tr.question_id, tr.normalized FROM text_rulings tr
+             JOIN questions q ON q.id = tr.question_id WHERE q.event_id = ?', [$eventId]) as $r) {
+    $ruled[(int)$r['question_id']][$r['normalized']] = true;
+}
+$pending = 0;
+foreach ($questions as $qq) {
+    if ($qq['type'] !== 'text') {
+        continue;
+    }
+    $qid = (int)$qq['id'];
+    foreach (q('SELECT value FROM answers WHERE question_id = ?', [$qid]) as $a) {
+        if (!isset($ruled[$qid][normalize_text($a['value'])])) {
+            $pending++;
+            break;
+        }
+    }
+}
 ?>
 <section class="hero compact">
   <p class="eyebrow"><?= e($event['name']) ?> · <span class="status status-<?= e($event['status']) ?>"><?= e($event['status']) ?></span></p>
