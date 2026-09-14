@@ -14,7 +14,7 @@ foreach ($askable as $qq) {
     }
 }
 $players = (int)q1('SELECT COUNT(*) c FROM players WHERE event_id=? AND submitted_at IS NOT NULL', [$eventId])['c'];
-admin_chrome('Dashboard', 'index.php');
+admin_chrome('Dashboard', 'index.php', $event);
 ?>
 <section class="hero compact">
   <p class="eyebrow"><?= e($event['name']) ?> · <span class="status status-<?= e($event['status']) ?>"><?= e($event['status']) ?></span></p>

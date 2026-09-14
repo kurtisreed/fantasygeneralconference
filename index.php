@@ -95,6 +95,11 @@ page_head('Play');
   </form>
 </div>
 
-<p class="center"><a class="link" href="leaderboard.php">See the standings &rarr;</a></p>
+<p class="center links-row">
+  <a class="link" href="leaderboard.php">See the standings &rarr;</a>
+  <?php if (event_count() > 1): ?>
+    <a class="link" href="conferences.php">Past conferences &rarr;</a>
+  <?php endif; ?>
+</p>
 <?php
 page_foot();

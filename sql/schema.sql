@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS events (
   id          INT AUTO_INCREMENT PRIMARY KEY,
   slug        VARCHAR(64)  NOT NULL,
   name        VARCHAR(160) NOT NULL,
+  starts_at   DATE         NULL,
   lock_at     DATETIME     NULL,
   status      ENUM('draft','open','locked','final') NOT NULL DEFAULT 'draft',
   created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,

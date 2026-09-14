@@ -54,14 +54,20 @@ if ($lock !== null && !strtotime($lock)) {
 $existing = q1('SELECT * FROM events WHERE slug = ?', [$slug]);
 $eventId  = fgc_seed($slug, $name);
 
+$lockAt = $lock !== null
+    ? date('Y-m-d H:i:s', (int)strtotime($lock))
+    : ($existing['lock_at'] ?? null);
+
 exec_sql(
-    'UPDATE events SET lock_at = ?, status = ? WHERE id = ?',
-    [
-        $lock !== null ? date('Y-m-d H:i:s', (int)strtotime($lock)) : ($existing['lock_at'] ?? null),
-        $open ? 'open' : ($existing['status'] ?? 'draft'),
-        $eventId,
-    ]
+    // starts_at is what makes a conference "current", so a past one backfilled
+    // today sorts by when it happened rather than when it was entered.
+    'UPDATE events SET lock_at = ?, status = ?, starts_at = COALESCE(DATE(?), starts_at) WHERE id = ?',
+    [$lockAt, $open ? 'open' : ($existing['status'] ?? 'draft'), $lockAt, $eventId]
 );
+
+if ($lockAt === null) {
+    fwrite(STDERR, "Note: no --lock given, so this conference has no date and will sort by when it was created.\n");
+}
 
 $event     = q1('SELECT * FROM events WHERE id = ?', [$eventId]);
 $questions = get_questions($eventId);

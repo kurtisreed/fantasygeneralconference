@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     redirect('players.php');
 }
 
-admin_chrome('Players', 'players.php');
+admin_chrome('Players', 'players.php', $event);
 
 $players = q(
     'SELECT p.*, COALESCE(SUM(s.points),0) AS total,

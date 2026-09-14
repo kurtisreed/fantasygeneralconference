@@ -17,16 +17,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $status = (string)$event['status'];
         }
         $lock = (string)post('lock_at');
+        $lockAt = $lock !== '' ? str_replace('T', ' ', $lock) . ':00' : null;
         exec_sql(
-            'UPDATE events SET name = ?, status = ?, lock_at = ? WHERE id = ?',
-            [(string)post('name'), $status, $lock !== '' ? str_replace('T', ' ', $lock) . ':00' : null, $eventId]
+            // starts_at decides which conference counts as current, so keep it
+            // in step with the lock time rather than asking for it twice.
+            'UPDATE events SET name = ?, status = ?, lock_at = ?,
+                    starts_at = COALESCE(DATE(?), starts_at)
+              WHERE id = ?',
+            [(string)post('name'), $status, $lockAt, $lockAt, $eventId]
         );
         flash('Event updated.');
     }
     redirect('event.php');
 }
 
-admin_chrome('Event', 'event.php');
+admin_chrome('Event', 'event.php', $event);
 
 $lockValue = $event['lock_at'] ? date('Y-m-d\TH:i', strtotime((string)$event['lock_at'])) : '';
 $statuses = [

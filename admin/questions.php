@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     redirect('questions.php');
 }
 
-admin_chrome('Questions', 'questions.php');
+admin_chrome('Questions', 'questions.php', $event);
 
 $questions = get_questions($eventId, true);
 $sections = group_by_section($questions);

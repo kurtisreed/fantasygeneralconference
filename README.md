@@ -68,6 +68,9 @@ fallback in case PHP ever stops executing.
 
 ## Running the game
 
+0. **Conferences** — pick which one you're working on. Everything else in the
+   admin applies to that choice, and it sticks until you switch. A red bar
+   across the top says so whenever you're editing a past conference.
 1. **Questions** — set the over/under lines and any point changes.
 2. **Event** — set a lock time (Mountain Time) and flip status to *open*.
    Share the site link.
@@ -96,10 +99,17 @@ php tools/new_conference.php april-2027 "April 2027 General Conference" \
 ```
 
 That creates the event and its questions, and sets the moment picks freeze
-(normally the start of the Saturday morning session, Mountain Time). The site
-always shows the newest event, so the previous conference stays intact as
-history. Add `--open` to open it for picks right away instead of leaving it in
-draft.
+(normally the start of the Saturday morning session, Mountain Time). Add
+`--open` to open it for picks right away instead of leaving it in draft.
+
+Players always see the most recent conference by date, and every earlier one
+stays readable: `conferences.php` lists them all with their winners, and
+`leaderboard.php?event=<slug>` shows any conference's standings. In the admin,
+**Conferences** switches which one you are working on.
+
+Pass `--lock` whenever you can. It sets `starts_at`, which is what decides
+which conference counts as current — so a past conference backfilled today
+sorts by when it happened, not by when you entered it.
 
 Two things to check before each conference:
 
@@ -117,8 +127,9 @@ Everything else — scoring, admin, standings — is generic and needs no change
 index.php          name entry / resume with code
 play.php           the sheet
 submitted.php      confirmation + entry code
-leaderboard.php    standings, and one player's sheet with ?player=N
-admin/             login, dashboard, results, players, questions, event
+leaderboard.php    standings; ?event=<slug> for a past one, ?player=N for a sheet
+conferences.php    every conference and its winner
+admin/             login, conferences, dashboard, results, players, questions, event
 lib/               db, scoring engine, question loading, auth, layout
 sql/schema.sql     tables
 tools/install.php  one-time installer (delete after setup)

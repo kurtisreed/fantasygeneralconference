@@ -4,11 +4,15 @@ require_once __DIR__ . '/lib/bootstrap.php';
 require_once APP_ROOT . '/lib/questions.php';
 require_once APP_ROOT . '/lib/scoring.php';
 
-$event = get_event();
+// ?event=<slug> shows a past conference; without it, the current one.
+$slug  = isset($_GET['event']) ? trim((string)$_GET['event']) : null;
+$event = get_event($slug !== '' ? $slug : null);
 if (!$event) {
-    exit('No event set up yet.');
+    exit('No conference found.');
 }
-$eventId = (int)$event['id'];
+$eventId    = (int)$event['id'];
+$isArchive  = $slug !== null && $slug !== '';
+$manyEvents = event_count() > 1;
 $questions = get_questions($eventId);
 $byId = [];
 foreach ($questions as $qq) {
@@ -32,12 +36,23 @@ if ($detailId) {
     $detail = q1('SELECT * FROM players WHERE id = ? AND event_id = ?', [$detailId, $eventId]);
 }
 
+// Keep the conference on every link from this page, or "close" would jump back
+// to the current standings from a past one.
+$self = 'leaderboard.php' . ($isArchive ? '?event=' . rawurlencode((string)$slug) : '');
+$selfQ = 'leaderboard.php?' . ($isArchive ? 'event=' . rawurlencode((string)$slug) . '&' : '');
+
 page_head('Standings');
 ?>
 <section class="hero compact">
   <p class="eyebrow"><?= e($event['name']) ?></p>
   <h1>Standings</h1>
-  <p class="lede"><?= $scoredPoints ?> of <?= $possible ?> points scored so far.</p>
+  <p class="lede">
+    <?= $scoredPoints ?> of <?= $possible ?> points scored
+    <?= $event['status'] === 'final' ? 'in total.' : 'so far.' ?>
+  </p>
+  <?php if ($manyEvents): ?>
+    <p class="notice"><a class="link" href="conferences.php">All conferences &rarr;</a></p>
+  <?php endif; ?>
 </section>
 
 <?php if (!$board): ?>
@@ -55,7 +70,7 @@ page_head('Standings');
         $lastTotal = (int)$row['total']; ?>
       <li class="board-row <?= $rank === 1 ? 'leader' : '' ?>">
         <span class="rank"><?= $rank ?></span>
-        <a class="board-name" href="?player=<?= (int)$row['id'] ?>"><?= e($row['display_name']) ?></a>
+        <a class="board-name" href="<?= e($selfQ) ?>player=<?= (int)$row['id'] ?>"><?= e($row['display_name']) ?></a>
         <span class="board-pts"><?= (int)$row['total'] ?></span>
       </li>
     <?php endforeach; ?>
@@ -68,7 +83,7 @@ page_head('Standings');
   <section class="card">
     <header class="section-head">
       <h2><?= e($detail['display_name']) ?></h2>
-      <a class="link" href="leaderboard.php">close</a>
+      <a class="link" href="<?= e($self) ?>">close</a>
     </header>
     <?php foreach ($sections as $key => $qs): ?>
       <h3 class="detail-head"><?= e($meta[$key]['title']) ?></h3>

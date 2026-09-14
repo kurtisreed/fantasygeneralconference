@@ -307,3 +307,37 @@ table { width: 100%; border-collapse: collapse; }
 .locked-note { font-style: italic; }
 .locked .chip span { cursor: default; }
 .st-blank { opacity: .5; }
+
+/* ---------- which conference am I editing? ---------- */
+.workingon {
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  max-width: 720px; margin: 0 auto; padding: 10px 16px;
+  font-size: 14px; border-bottom: 1px solid var(--line);
+}
+.workingon .right { margin-left: auto; }
+.workingon-label {
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-soft); font-weight: 600;
+}
+.workingon a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.workingon.past {
+  background: var(--bad-bg); border-bottom-color: var(--bad);
+}
+.workingon.past .workingon-label { color: var(--bad); }
+
+/* ---------- conference cards ---------- */
+.conf .section-head h2 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.conf-on { border-color: var(--accent); border-width: 2px; }
+.conf-meta { margin-bottom: 12px; }
+.conf-actions { justify-content: flex-start; margin: 0; }
+.conf-actions form { margin: 0; }
+.pill-now {
+  background: var(--accent); color: var(--accent-ink);
+  border-color: var(--accent); font-weight: 600;
+}
+.snippet {
+  background: var(--bg); border: 1px solid var(--line); border-radius: 9px;
+  padding: 10px 12px; font-size: 12px; overflow-x: auto; margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.links-row { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }

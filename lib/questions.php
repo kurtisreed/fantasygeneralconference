@@ -48,12 +48,50 @@ function section_meta(): array
     ];
 }
 
+/** Newest conference first, by when it actually happened. */
+const EVENT_ORDER = 'COALESCE(starts_at, DATE(lock_at), DATE(created_at)) DESC, id DESC';
+
 function get_event(?string $slug = null): ?array
 {
     if ($slug !== null) {
         return q1('SELECT * FROM events WHERE slug = ?', [$slug]);
     }
-    return q1('SELECT * FROM events ORDER BY id DESC LIMIT 1');
+    // The current conference is the latest by date, not by insertion order —
+    // a past conference added after the fact must not become "current".
+    return q1('SELECT * FROM events ORDER BY ' . EVENT_ORDER . ' LIMIT 1');
+}
+
+function get_event_by_id(int $id): ?array
+{
+    return q1('SELECT * FROM events WHERE id = ?', [$id]);
+}
+
+/** Every conference, newest first, with enough counts to summarise each one. */
+function get_events(): array
+{
+    return q(
+        'SELECT e.*,
+                (SELECT COUNT(*) FROM players p
+                  WHERE p.event_id = e.id AND p.submitted_at IS NOT NULL) AS player_count,
+                (SELECT COUNT(*) FROM questions q2
+                  WHERE q2.event_id = e.id AND q2.active = 1) AS question_count,
+                (SELECT COUNT(*) FROM results r
+                   JOIN questions q3 ON q3.id = r.question_id
+                  WHERE q3.event_id = e.id) AS result_count
+           FROM events e
+          ORDER BY COALESCE(e.starts_at, DATE(e.lock_at), DATE(e.created_at)) DESC, e.id DESC'
+    );
+}
+
+function event_count(): int
+{
+    return (int)q1('SELECT COUNT(*) AS c FROM events')['c'];
+}
+
+/** True once a conference has something worth showing on a standings page. */
+function event_has_standings(array $event): bool
+{
+    return (int)($event['player_count'] ?? 0) > 0;
 }
 
 function get_sessions(int $eventId): array

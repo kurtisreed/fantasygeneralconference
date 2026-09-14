@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     redirect('results.php');
 }
 
-admin_chrome('Results', 'results.php');
+admin_chrome('Results', 'results.php', $event);
 
 $results = get_results($eventId);
 $sections = group_by_section($questions);
