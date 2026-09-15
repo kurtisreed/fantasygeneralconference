@@ -35,8 +35,10 @@ $copies    = max(1, min(30, query_int('copies', 1)));
     <a class="btn" href="index.php">Back to admin</a>
   </form>
   <p class="toolbar-hint">
-    In the print dialog choose <strong>Save as PDF</strong>, set margins to Default
-    and turn <strong>on</strong> &ldquo;Background graphics&rdquo; so the boxes print.
+    In the print dialog: <strong>Save as PDF</strong>, margins <strong>Default</strong>,
+    <strong>Background graphics on</strong> so the boxes print, and
+    <strong>Headers and footers off</strong> &mdash; those add the date and page title
+    to every page and push the sheet onto a third page.
   </p>
 </div>
 
@@ -65,8 +67,8 @@ $copies    = max(1, min(30, query_int('copies', 1)));
   </p>
 
   <?php
-  // The grid runs first, then everything else. The sheet is two pages; the
-  // break lands between sections because each one avoids splitting.
+  // Two pages, split deliberately: the grid, conducting and first speaker on
+  // page one, the rest on page two. Left to the browser it spilled onto three.
   $gridQs = $sections['apostles'] ?? [];
   $rest   = array_filter(
       $sections,
@@ -104,7 +106,7 @@ $copies    = max(1, min(30, query_int('copies', 1)));
   <?php endif; ?>
 
   <?php foreach ($rest as $key => $qs): ?>
-    <section class="p-section">
+    <section class="p-section <?= $key === 'first_speaker' ? 'page-break' : '' ?>">
       <h2><?= e($meta[$key]['title']) ?>
         <span class="p-pts"><?= total_points_possible($qs) ?> pts</span>
       </h2>
