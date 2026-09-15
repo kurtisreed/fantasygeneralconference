@@ -83,8 +83,8 @@ page_head('Play');
 
   <?php if ($open): ?>
   <section class="card choice">
-    <h2>Start a new sheet</h2>
-    <p class="muted">Make your picks before Saturday morning.</p>
+    <h2>Make new picks!</h2>
+    <p class="muted">Make your picks before General Conference starts.</p>
     <form method="post">
       <?= csrf_field() ?>
       <label for="display_name">Your name</label>
@@ -97,7 +97,7 @@ page_head('Play');
 
   <section class="card choice">
     <h2>Already started?</h2>
-    <p class="muted">Enter the 6-character code from your sheet.</p>
+    <p class="muted">Enter the 6-character code to edit your picks.</p>
     <form method="post">
       <?= csrf_field() ?>
       <input type="hidden" name="action" value="resume">
@@ -109,7 +109,7 @@ page_head('Play');
   </section>
 
   <section class="card choice">
-    <h2>See the standings</h2>
+    <h2>Standings!</h2>
     <p class="muted">
       <?php if (!$board): ?>
         Nobody has turned in a sheet yet.
