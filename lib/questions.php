@@ -32,7 +32,7 @@ function section_meta(): array
         ],
         'counts' => [
             'title' => 'Counting',
-            'blurb' => 'Three points each, exact answers only.',
+            'blurb' => 'Pick a side. Three points each, and no ties — every line ends in a half.',
             'layout' => 'list',
         ],
         'words' => [

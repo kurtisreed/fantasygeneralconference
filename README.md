@@ -17,7 +17,7 @@ build step — upload the folder and it runs.
 | First speaker of each session | 4 | 8 |
 | Which choir sings each session | 4 | 4 |
 | Tie colors (Oaks, Eyring, Christofferson) + choir, from a fixed palette | 4 | 12 |
-| How many women pray / speak, and how many speakers are from outside the US | 3 | 9 |
+| Over/under on women praying, women speaking, and speakers from outside the US | 3 | 9 |
 | Over/under on "Jesus Christ", "temple(s)", "covenant(s)", "Book of Mormon" | 4 | 12 |
 | Over/under on times President Oaks is quoted | 1 | 3 |
 | Sessions watched (1 pt each) | 1 | 4 |
@@ -185,7 +185,7 @@ docs/deploy-hostgator.md  deploying and updating on cPanel hosting
 Adding a question means picking a type; the scoring engine already handles all of them.
 
 - `pick_one` — options list; renders as pills (≤6 options) or a dropdown
-- `number` — exact match, optional `tolerance` in config
+- `number` — exact match, optional `tolerance` in config (unused by the current sheet)
 - `over_under` — `line` in config; player picks a side. Lines end in a half so
   ties can't happen; the push branch remains for hand-set whole-number lines
 - `text` — free text, matched on normalized text (unused by the current sheet)

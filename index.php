@@ -97,7 +97,7 @@ page_head('Play');
 
   <section class="card choice">
     <h2>Already started?</h2>
-    <p class="muted">Enter the 6-character code to edit your picks.</p>
+    <p class="muted">Enter the 6-character code to edit your picks. If you don't remember the code, you can see what your entries were in the standings section.</p>
     <form method="post">
       <?= csrf_field() ?>
       <input type="hidden" name="action" value="resume">

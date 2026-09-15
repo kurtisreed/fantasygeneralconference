@@ -37,6 +37,28 @@ All three measured the same way, with the same script:
 April 2026 ran short because the Solemn Assembly sustaining President Oaks took
 session time.
 
+## The counting questions
+
+These are over/unders too, so nothing on the sheet has to be typed. Counted
+from the session summaries and bylines in the Liahona:
+
+| | Apr 2025 | Oct 2025 | Apr 2026 | Line |
+|---|---:|---:|---:|---:|
+| Women who prayed | 2 | 2 | 2 | 2.5 |
+| Women who spoke | 3 | 3 | 3 | 3.5 |
+| Speakers born outside the US | ? | ? | ? | 10.5 |
+
+**The first two barely move.** Three conferences running, exactly two women
+prayed and three women spoke, so whichever side of the line matches history is
+close to a free three points for anyone who checks. If that bothers you, the
+honest fix is not a different line — no line splits a number that never
+changes — but a different question type: a dropdown of 0/1/2/3/4+ keeps it a
+real guess and still needs no typing.
+
+The third line is the least grounded number on the sheet. Birthplace isn't in
+the transcripts, so it has to be counted by hand against leader biographies,
+and 10.5 is an estimate from the April 2026 list rather than a measurement.
+
 ## Counting rules
 
 Set deliberately, and baked into each question's `pattern` so the sheet and the

@@ -392,22 +392,27 @@ function fgc_seed(string $slug = 'october-2026', string $name = 'October 2026 Ge
         ];
     }
 
-    // ---- 6. Counting questions (6 pts) ----
+    // ---- 6. Counting questions (9 pts) ----
+    // Over/unders, so nothing on the sheet needs typing. Lines are measured:
+    // the last three conferences each had exactly 2 women pray and 3 women
+    // speak, so those two barely move — see docs/word-counts.md.
     $defs[] = [
-        'qkey' => 'women_pray', 'section' => 'counts', 'type' => 'number', 'points' => 3,
+        'qkey' => 'women_pray', 'section' => 'counts', 'type' => 'over_under', 'points' => 3,
         'prompt' => 'How many women will give prayers?',
-        'config' => ['min' => 0, 'max' => 8],
+        'help_text' => 'Two in each of the last three conferences.',
+        'config' => ['line' => 2.5],
     ];
     $defs[] = [
-        'qkey' => 'women_speak', 'section' => 'counts', 'type' => 'number', 'points' => 3,
+        'qkey' => 'women_speak', 'section' => 'counts', 'type' => 'over_under', 'points' => 3,
         'prompt' => 'How many women will speak?',
-        'config' => ['min' => 0, 'max' => 12],
+        'help_text' => 'Three in each of the last three conferences.',
+        'config' => ['line' => 3.5],
     ];
     $defs[] = [
-        'qkey' => 'speakers_outside_us', 'section' => 'counts', 'type' => 'number', 'points' => 3,
+        'qkey' => 'speakers_outside_us', 'section' => 'counts', 'type' => 'over_under', 'points' => 3,
         'prompt' => 'How many speakers will be from outside the United States?',
         'help_text' => 'Going by where they were born — Church leader biographies list it.',
-        'config' => ['min' => 0, 'max' => 20],
+        'config' => ['line' => 10.5],
     ];
 
     // ---- 7. Over/under word counts (15 pts) ----
