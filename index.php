@@ -2,6 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/lib/bootstrap.php';
 require_once APP_ROOT . '/lib/questions.php';
+require_once APP_ROOT . '/lib/scoring.php';
 
 $event = get_event();
 if (!$event) {
@@ -45,6 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// The standings card carries a line of real news so it reads as a peer of the
+// two forms rather than a link in card's clothing.
+$board  = leaderboard($eventId);
+$leader = ($board && (int)$board[0]['total'] > 0) ? $board[0] : null;
+
 page_head('Play');
 ?>
 <section class="hero">
@@ -57,9 +63,9 @@ page_head('Play');
   </p>
   <?php if (!$open): ?>
     <p class="notice">
-      <?= $event['status'] === 'open'
-            ? 'Entries have closed — conference has started.'
-            : 'Entries are not open yet. Check back soon.' ?>
+      <?= $event['status'] === 'draft'
+            ? 'Entries are not open yet. Check back soon.'
+            : 'Entries have closed — conference has started.' ?>
     </p>
   <?php endif; ?>
   <?php if (!empty($event['lock_at']) && $open): ?>
@@ -69,37 +75,55 @@ page_head('Play');
 
 <?php if ($error): ?><div class="error"><?= e($error) ?></div><?php endif; ?>
 
-<?php if ($open): ?>
-<div class="card">
-  <h2>Start a new sheet</h2>
-  <form method="post" class="stack">
-    <?= csrf_field() ?>
-    <label for="display_name">Your name</label>
-    <input type="text" id="display_name" name="display_name" maxlength="80"
-           autocomplete="name" placeholder="e.g. Ethan S." required>
-    <button type="submit" class="btn btn-primary">Start picking</button>
-  </form>
-</div>
-<?php endif; ?>
+<div class="trio">
 
-<div class="card">
-  <h2>Already started?</h2>
-  <p class="muted">Enter the 6-character code from your sheet.</p>
-  <form method="post" class="stack">
-    <?= csrf_field() ?>
-    <input type="hidden" name="action" value="resume">
-    <label for="entry_code">Entry code</label>
-    <input type="text" id="entry_code" name="entry_code" maxlength="6"
-           class="code-input" autocapitalize="characters" autocomplete="off" required>
-    <button type="submit" class="btn">Open my sheet</button>
-  </form>
-</div>
-
-<p class="center links-row">
-  <a class="link" href="leaderboard.php">See the standings &rarr;</a>
-  <?php if (event_count() > 1): ?>
-    <a class="link" href="conferences.php">Past conferences &rarr;</a>
+  <?php if ($open): ?>
+  <section class="card choice">
+    <h2>Start a new sheet</h2>
+    <p class="muted">Make your picks before Saturday morning.</p>
+    <form method="post">
+      <?= csrf_field() ?>
+      <label for="display_name">Your name</label>
+      <input type="text" id="display_name" name="display_name" maxlength="80"
+             autocomplete="name" placeholder="e.g. Ethan S." required>
+      <button type="submit" class="btn btn-primary">Start picking</button>
+    </form>
+  </section>
   <?php endif; ?>
-</p>
+
+  <section class="card choice">
+    <h2>Already started?</h2>
+    <p class="muted">Enter the 6-character code from your sheet.</p>
+    <form method="post">
+      <?= csrf_field() ?>
+      <input type="hidden" name="action" value="resume">
+      <label for="entry_code">Entry code</label>
+      <input type="text" id="entry_code" name="entry_code" maxlength="6"
+             class="code-input" autocapitalize="characters" autocomplete="off" required>
+      <button type="submit" class="btn">Open my sheet</button>
+    </form>
+  </section>
+
+  <section class="card choice">
+    <h2>See the standings</h2>
+    <p class="muted">
+      <?php if (!$board): ?>
+        Nobody has turned in a sheet yet.
+      <?php elseif ($leader !== null): ?>
+        <?= count($board) ?> playing.
+        <strong><?= e($leader['display_name']) ?></strong> leads with <?= (int)$leader['total'] ?>.
+      <?php else: ?>
+        <?= count($board) ?> sheet<?= count($board) === 1 ? '' : 's' ?> in.
+        Scoring starts when conference does.
+      <?php endif; ?>
+    </p>
+    <a class="btn choice-go" href="leaderboard.php">See the standings</a>
+  </section>
+
+</div>
+
+<?php if (event_count() > 1): ?>
+  <p class="center"><a class="link" href="conferences.php">Past conferences &rarr;</a></p>
+<?php endif; ?>
 <?php
 page_foot();

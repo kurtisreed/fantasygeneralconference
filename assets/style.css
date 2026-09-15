@@ -370,3 +370,20 @@ table { width: 100%; border-collapse: collapse; }
 .sp-rm input { width: 18px; height: 18px; }
 .sp-new .sp-num { color: var(--accent); font-weight: 700; }
 .notice-block { display: block; background: var(--card); border: 1px solid var(--line); }
+
+/* ---------- the three ways in ---------- */
+.trio {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+  align-items: stretch;
+}
+/* Equal weight: same card, same height, action pinned to the bottom edge
+   so the three buttons line up however much text sits above them. */
+.trio .choice { display: flex; flex-direction: column; margin: 0; }
+.choice h2 { margin: 0 0 4px; }
+.choice > .muted { margin: 0 0 14px; }
+.choice form { display: flex; flex-direction: column; flex: 1; gap: 6px; }
+.choice form .btn { margin-top: auto; }
+.choice-go { margin-top: auto; text-align: center; }
