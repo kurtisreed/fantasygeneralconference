@@ -112,10 +112,11 @@ past one keeps the names it was played with. Renaming somebody keeps their
 picks; removing them deletes that row of the grid and every pick on it, and
 the page says so before you save.
 
-Every answer is a dropdown, a number or an over/under, so scoring is exact and
-there is nothing to arbitrate. Colors come from a fixed palette
-(`FGC_COLORS` in `lib/seed.php`) for the same reason — "navy" and "dark blue"
-can't be argued about if they're the same list entry.
+Every answer is a tap — a dropdown, a pill or an over/under. The only thing a
+player types is their own name. That makes scoring exact with nothing to
+arbitrate: colors come from a fixed palette (`FGC_COLORS` in `lib/seed.php`),
+so "navy" and "dark blue" can't be argued about when they're the same list
+entry, and the counting questions are over/unders rather than write-ins.
 
 Scores recompute automatically whenever you save results or sessions watched.
 `Event → Rescore everyone` is there for peace of mind.
