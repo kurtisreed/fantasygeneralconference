@@ -100,7 +100,8 @@ $locked = $event['status'] !== 'draft' && $event['status'] !== 'open';
           <td><?= e($qq['prompt']) ?></td>
           <td>
             <?php if ($qq['type'] === 'over_under'): ?>
-              <input type="number" step="1" min="0" class="mini" name="line[<?= $qid ?>]"
+              <?php // Half-point lines are the whole idea — step="1" rejected them. ?>
+              <input type="number" step="0.5" min="0" class="mini" name="line[<?= $qid ?>]"
                      value="<?= e((string)($qq['config']['line'] ?? '')) ?>">
             <?php else: ?><span class="muted">—</span><?php endif; ?>
           </td>
