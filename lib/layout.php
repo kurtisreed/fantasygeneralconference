@@ -20,6 +20,10 @@ function page_head(string $title, string $assetPrefix = ''): void
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= e($title) ?> · <?= e($CONFIG['site_name']) ?></title>
 <link rel="stylesheet" href="<?= e(asset_url('assets/style.css', $assetPrefix)) ?>">
+<link rel="icon" href="<?= e($assetPrefix) ?>favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="192x192" href="<?= e(asset_url('assets/img/icon-192.png', $assetPrefix)) ?>">
+<link rel="apple-touch-icon" href="<?= e(asset_url('assets/img/icon-180.png', $assetPrefix)) ?>">
+<meta name="theme-color" content="#5d7342">
 </head>
 <body>
 <header class="site-header">
