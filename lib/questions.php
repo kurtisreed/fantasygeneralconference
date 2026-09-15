@@ -37,7 +37,7 @@ function section_meta(): array
         ],
         'watched' => [
             'title' => 'Sessions watched',
-            'blurb' => 'One point for every session you actually watched.',
+            'blurb' => 'Credit for every session you actually watched.',
             'layout' => 'list',
         ],
     ];
@@ -74,6 +74,20 @@ function section_info(string $key): array
         'blurb'  => '',
         'layout' => 'list',
     ];
+}
+
+/**
+ * Points per session watched, read off the participation question rather than
+ * written out in each place that mentions it.
+ */
+function watched_per(array $questions): int
+{
+    foreach ($questions as $q) {
+        if ($q['type'] === 'watched') {
+            return (int)($q['config']['per'] ?? 1);
+        }
+    }
+    return 1;
 }
 
 function get_event_by_id(int $id): ?array

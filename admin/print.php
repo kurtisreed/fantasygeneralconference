@@ -142,7 +142,7 @@ $copies    = max(1, min(30, query_int('copies', 1)));
 
   <footer class="sheet-foot">
     <div class="sheet-watched">
-      <span class="fill-label">Sessions watched (1 pt each)</span><span class="fill-line short"></span>
+      <span class="fill-label">Sessions watched (<?= watched_per($questions) ?> pts each)</span><span class="fill-line short"></span>
     </div>
     <p class="sheet-slug"><?= e($event['slug']) ?></p>
   </footer>

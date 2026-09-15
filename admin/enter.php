@@ -134,7 +134,7 @@ admin_chrome('Paper sheets', 'enter.php', $event);
 
     <div class="card">
       <h2>Sessions watched</h2>
-      <p class="muted">One point each. Fill this in when you score the sheets together.</p>
+      <p class="muted"><?= watched_per($questions) ?> points each. Fill this in when you score the sheets together.</p>
       <input type="number" name="sessions_watched" min="0" max="4" class="mini"
              value="<?= (int)$player['sessions_watched'] ?>">
     </div>

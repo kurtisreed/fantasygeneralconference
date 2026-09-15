@@ -8,7 +8,7 @@ standings update live.
 Vanilla PHP (8.1 or newer) + MySQL/MariaDB. No framework, no Composer, no
 build step — upload the folder and it runs.
 
-## The sheet (71 points)
+## The sheet (79 points)
 
 | Section | Questions | Points |
 |---|---:|---:|
@@ -18,7 +18,7 @@ build step — upload the folder and it runs.
 | Which choir sings each session | 4 | 4 |
 | Tie colors (Oaks, Eyring, Christofferson) + choir, from a fixed palette | 4 | 12 |
 | Over/under: four word counts, Oaks quoted, women praying, women speaking, speakers from outside the US | 8 | 24 |
-| Sessions watched (1 pt each) | 1 | 4 |
+| Sessions watched (3 pts each) | 1 | 12 |
 
 Point values and over/under lines are editable in the admin at any time.
 

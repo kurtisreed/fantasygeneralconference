@@ -450,15 +450,18 @@ function fgc_seed(string $slug = 'october-2026', string $name = 'October 2026 Ge
         'config' => ['line' => 10.5],
     ];
 
-    // ---- 7. Participation (4 pts) ----
+    // ---- 7. Participation (12 pts) ----
+    // Worth more than any single guess on the sheet: watching is the point of
+    // the game, and it's the one thing everybody can control. 'points' is the
+    // most obtainable, so it has to stay per × max.
     $defs[] = [
         'qkey'      => 'sessions_watched',
         'section'   => 'watched',
         'type'      => 'watched',
-        'points'    => 4,
+        'points'    => 12,
         'prompt'    => 'How many sessions did you watch?',
-        'help_text' => 'One point per session watched. Filled in when we score the sheets.',
-        'config'    => ['per' => 1, 'max' => 4],
+        'help_text' => 'Three points per session watched. Filled in when we score the sheets.',
+        'config'    => ['per' => 3, 'max' => 4],
     ];
 
     // ---- write ----
