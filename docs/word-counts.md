@@ -2,14 +2,23 @@
 
 ## Where the numbers come from
 
-`tools/count_words.php` fetches every talk of a conference from the Church's
-study API and counts the words. It counts **only what was spoken**: the talk
-body, with footnotes, titles, bylines and the editorial summary line removed.
+Every talk of a conference is fetched from the Church's study API and counted.
+Only **what was spoken** counts: the talk body, with footnotes, titles, bylines
+and the editorial summary line removed.
+
+**Admin → Word counts** does it in a browser. It downloads a few talks per
+request and reloads itself until they're all on disk, so hosting that kills
+long-running scripts can't interrupt it, then one button stores the counts as
+results and rescores everyone.
+
+From a shell, if that's handier:
 
 ```bash
 php tools/count_words.php 2026/10           # print the counts
 php tools/count_words.php 2026/10 --write   # store them as results and rescore
 ```
+
+Both share `lib/harvest.php`, so they always agree.
 
 Responses cache under `tools/cache/`, so re-runs don't re-hit the site.
 

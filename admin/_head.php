@@ -64,6 +64,7 @@ function admin_chrome(string $title, string $current = '', ?array $event = null)
         'players.php'    => 'Players',
         'enter.php'      => 'Paper sheets',
         'speakers.php'   => 'Speakers',
+        'harvest.php'    => 'Word counts',
         'questions.php'  => 'Questions',
         'event.php'      => 'Event',
     ];

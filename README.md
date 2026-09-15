@@ -26,10 +26,14 @@ Point values and over/under lines are editable in the admin at any time.
 
 ### Settling the over/under lines
 
-`tools/count_words.php` fetches every talk of a conference from the Church's
+**Admin → Word counts** fetches every talk of a conference from the Church's
 study API and counts the words — only what was spoken, with footnotes, titles
 and bylines stripped. Talk text posts within a day or two of each session,
-weeks before the Liahona PDF.
+weeks before the Liahona PDF. It downloads a few talks per request and reloads
+itself until done, so it works on hosting that kills long-running scripts, and
+one button then stores the counts as results and rescores everyone.
+
+The same job from a shell, if that's handier:
 
 ```bash
 php tools/count_words.php 2026/10           # print the counts
@@ -165,8 +169,9 @@ submitted.php      confirmation + entry code
 leaderboard.php    standings; ?event=<slug> for a past one, ?player=N for a sheet
 conferences.php    every conference and its winner
 admin/             login, conferences, dashboard, results, players, paper sheets,
-                   printable sheet, speakers, questions, event
-lib/               db, scoring engine, question loading, sheet rendering, auth, layout
+                   printable sheet, speakers, word counts, questions, event
+lib/               db, scoring engine, question loading, sheet rendering,
+                   talk harvesting, auth, layout
 sql/schema.sql     tables
 tools/install.php  one-time installer (delete after setup)
 tools/count_words.php   fetches conference talks and counts the over/under words
