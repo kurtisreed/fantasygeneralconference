@@ -38,9 +38,6 @@ function page_foot(): void
 {
     ?>
 </main>
-<footer class="site-footer">
-  <p>Guess well. Watch anyway.</p>
-</footer>
 <script>
 // Chromium browsers — Brave in particular — will restore this page from the
 // back/forward cache even though it is sent no-store, which can show standings

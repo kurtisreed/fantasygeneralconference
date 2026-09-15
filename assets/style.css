@@ -1,35 +1,39 @@
 :root {
-  --bg: #f6f4ef;
-  --card: #ffffff;
-  --ink: #1e1b16;
-  --ink-soft: #6b6458;
-  --line: #e3ded2;
-  --accent: #3f5d8a;
+  /* Palette drawn from Yongsung Kim's "Shall Not Want": parchment and warm
+     cream from the light, sage and olive from the fields, gold from the sky. */
+  --bg: #f4eee1;
+  --card: #fffdf8;
+  --ink: #2b2820;
+  --ink-soft: #6f6553;
+  --line: #e4dac4;
+  --accent: #5d7342;
   --accent-ink: #ffffff;
-  --good: #2e7d4f;
-  --good-bg: #e8f4ec;
-  --bad: #a33a2c;
-  --bad-bg: #fbecea;
+  --gold: #a8792c;
+  --good: #4a6b3f;
+  --good-bg: #e8efdd;
+  --bad: #a1442c;
+  --bad-bg: #f8e9e2;
   --warn: #8a6d14;
   --radius: 12px;
-  --shadow: 0 1px 2px rgba(30, 27, 22, .06), 0 4px 16px rgba(30, 27, 22, .04);
+  --shadow: 0 1px 2px rgba(60, 48, 26, .07), 0 4px 16px rgba(60, 48, 26, .05);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #16150f;
-    --card: #211f18;
-    --ink: #f0ece2;
-    --ink-soft: #a49c8b;
-    --line: #35322a;
-    --accent: #7ea3d8;
-    --accent-ink: #12161f;
-    --good: #7fd0a0;
-    --good-bg: #1c3227;
-    --bad: #e79486;
-    --bad-bg: #37211d;
+    --bg: #17150f;
+    --card: #221f18;
+    --ink: #f1ece0;
+    --ink-soft: #a89e88;
+    --line: #37322a;
+    --accent: #9ab377;
+    --accent-ink: #1a1f12;
+    --gold: #d8b25f;
+    --good: #9ab377;
+    --good-bg: #1f2717;
+    --bad: #e2917a;
+    --bad-bg: #32201a;
     --warn: #d9bc61;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 16px rgba(0, 0, 0, .2);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 4px 16px rgba(0, 0, 0, .22);
   }
 }
 
@@ -387,3 +391,41 @@ table { width: 100%; border-collapse: collapse; }
 .choice form { display: flex; flex-direction: column; flex: 1; gap: 6px; }
 .choice form .btn { margin-top: auto; }
 .choice-go { margin-top: auto; text-align: center; }
+
+/* ---------- the painting ---------- */
+.hero-art {
+  margin: 14px 0 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  position: relative;
+}
+.hero-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Crop to a band so the page opens with the art, not a wall of it. */
+  aspect-ratio: 1344 / 620;
+  object-fit: cover;
+  object-position: 50% 42%;
+}
+/* Attribution sits under the art: white on bright grass was unreadable. */
+.art-credit {
+  margin: 6px 0 0; text-align: right;
+  font-size: 11px; font-style: italic; color: var(--ink-soft);
+}
+
+/* The conference name is the headline now, not a kicker above one. */
+.hero-titled { padding: 18px 0 16px; }
+.hero-titled h1 {
+  font-size: clamp(28px, 5.2vw, 38px);
+  line-height: 1.1;
+  margin: 0 0 12px;
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+
+@media (max-width: 480px) {
+  .hero-art img { aspect-ratio: 1344 / 800; }
+}

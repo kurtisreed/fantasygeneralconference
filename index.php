@@ -53,9 +53,13 @@ $leader = ($board && (int)$board[0]['total'] > 0) ? $board[0] : null;
 
 page_head('Play');
 ?>
-<section class="hero">
-  <p class="eyebrow"><?= e($event['name']) ?></p>
-  <h1>Make your picks.</h1>
+<figure class="hero-art">
+  <img src="<?= e(asset_url('assets/img/shepherd.webp')) ?>" alt="" width="1344" height="756">
+</figure>
+<p class="art-credit">&ldquo;Shall Not Want&rdquo; by Yongsung Kim</p>
+
+<section class="hero hero-titled">
+  <h1><?= e($event['name']) ?></h1>
   <p class="lede">
     <?= $possible ?> points on the table. Guess who speaks when, who conducts,
     what color tie President Oaks wears, and how many times somebody says
