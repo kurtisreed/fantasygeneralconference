@@ -392,33 +392,12 @@ function fgc_seed(string $slug = 'october-2026', string $name = 'October 2026 Ge
         ];
     }
 
-    // ---- 6. Counting questions (9 pts) ----
-    // Over/unders, so nothing on the sheet needs typing. Lines are measured:
-    // the last three conferences each had exactly 2 women pray and 3 women
-    // speak, so those two barely move — see docs/word-counts.md.
-    $defs[] = [
-        'qkey' => 'women_pray', 'section' => 'counts', 'type' => 'over_under', 'points' => 3,
-        'prompt' => 'How many women will give prayers?',
-        'help_text' => 'Two in each of the last three conferences.',
-        'config' => ['line' => 2.5],
-    ];
-    $defs[] = [
-        'qkey' => 'women_speak', 'section' => 'counts', 'type' => 'over_under', 'points' => 3,
-        'prompt' => 'How many women will speak?',
-        'help_text' => 'Three in each of the last three conferences.',
-        'config' => ['line' => 3.5],
-    ];
-    $defs[] = [
-        'qkey' => 'speakers_outside_us', 'section' => 'counts', 'type' => 'over_under', 'points' => 3,
-        'prompt' => 'How many speakers will be from outside the United States?',
-        'help_text' => 'Going by where they were born — Church leader biographies list it.',
-        'config' => ['line' => 10.5],
-    ];
-
-    // ---- 7. Over/under word counts (15 pts) ----
-    // Lines are set from the last three conferences; see docs/word-counts.md.
-    // 'pattern' is what tools/count_words.php actually counts, so the rule on
-    // the sheet and the rule the script applies can never drift apart.
+    // ---- 6. Over/unders (24 pts) ----
+    // Every line is measured against the last three conferences and ends in a
+    // half, so a tie is impossible; see docs/word-counts.md.
+    // 'pattern' is what the word count actually counts, so the rule on the
+    // sheet and the rule the harvester applies can never drift apart. The
+    // people-counting ones carry no pattern — they are entered by hand.
     $words = [
         ['wc_jesus_christ', 'the phrase "Jesus Christ"', 287.5, '/\bJesus\s+Christ\b/iu',
          'Includes "The Church of Jesus Christ of Latter-day Saints."'],
@@ -450,7 +429,28 @@ function fgc_seed(string $slug = 'october-2026', string $name = 'October 2026 Ge
         'config'    => ['line' => 8.5],   // half-point: no ties here either
     ];
 
-    // ---- 8. Participation (4 pts) ----
+    // Counting people rather than words. No pattern — the transcripts don't
+    // say who prayed or where anybody was born, so these are entered by hand.
+    $defs[] = [
+        'qkey' => 'women_pray', 'section' => 'words', 'type' => 'over_under', 'points' => 3,
+        'prompt' => 'How many women will give prayers?',
+        'help_text' => 'Two in each of the last three conferences.',
+        'config' => ['line' => 2.5],
+    ];
+    $defs[] = [
+        'qkey' => 'women_speak', 'section' => 'words', 'type' => 'over_under', 'points' => 3,
+        'prompt' => 'How many women will speak?',
+        'help_text' => 'Three in each of the last three conferences.',
+        'config' => ['line' => 3.5],
+    ];
+    $defs[] = [
+        'qkey' => 'speakers_outside_us', 'section' => 'words', 'type' => 'over_under', 'points' => 3,
+        'prompt' => 'How many speakers will be from outside the United States?',
+        'help_text' => 'Going by where they were born — Church leader biographies list it.',
+        'config' => ['line' => 10.5],
+    ];
+
+    // ---- 7. Participation (4 pts) ----
     $defs[] = [
         'qkey'      => 'sessions_watched',
         'section'   => 'watched',

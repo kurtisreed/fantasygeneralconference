@@ -45,7 +45,6 @@ admin_chrome('Results', 'results.php', $event);
 
 $results = get_results($eventId);
 $sections = group_by_section($questions);
-$meta = section_meta();
 ?>
 <section class="hero compact">
   <h1>Results</h1>
@@ -57,7 +56,7 @@ $meta = section_meta();
 <?php foreach ($sections as $key => $qs):
     if ($key === 'watched') continue; ?>
   <section class="card">
-    <header class="section-head"><h2><?= e($meta[$key]['title']) ?></h2></header>
+    <header class="section-head"><h2><?= e(section_info($key)['title']) ?></h2></header>
     <?php foreach ($qs as $qq):
         $qid = (int)$qq['id'];
         $r = $results[$qid] ?? null;

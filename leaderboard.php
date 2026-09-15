@@ -21,7 +21,6 @@ foreach ($questions as $qq) {
 $results = get_results($eventId);
 $possible = total_points_possible($questions);
 $board = leaderboard($eventId);
-$meta = section_meta();
 
 $scoredPoints = 0;
 foreach ($questions as $qq) {
@@ -109,7 +108,7 @@ page_head('Standings');
       <a class="link" href="<?= e($self) ?>">close</a>
     </header>
     <?php foreach ($sections as $key => $qs): ?>
-      <h3 class="detail-head"><?= e($meta[$key]['title']) ?></h3>
+      <h3 class="detail-head"><?= e(section_info($key)['title']) ?></h3>
       <table class="detail">
         <?php foreach ($qs as $qq):
             $qid = (int)$qq['id'];

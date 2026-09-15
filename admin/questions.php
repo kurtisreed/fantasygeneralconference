@@ -60,7 +60,6 @@ admin_chrome('Questions', 'questions.php', $event);
 
 $questions = get_questions($eventId, true);
 $sections = group_by_section($questions);
-$meta = section_meta();
 $locked = $event['status'] !== 'draft' && $event['status'] !== 'open';
 ?>
 <section class="hero compact">
@@ -89,7 +88,7 @@ $locked = $event['status'] !== 'draft' && $event['status'] !== 'open';
 <?php foreach ($sections as $key => $qs): ?>
   <section class="card">
     <header class="section-head">
-      <h2><?= e($meta[$key]['title']) ?></h2>
+      <h2><?= e(section_info($key)['title']) ?></h2>
       <span class="pill"><?= total_points_possible(array_filter($qs, static fn($q) => (int)$q['active'] === 1)) ?> pts</span>
     </header>
     <table class="qtable">

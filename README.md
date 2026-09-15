@@ -17,9 +17,7 @@ build step — upload the folder and it runs.
 | First speaker of each session | 4 | 8 |
 | Which choir sings each session | 4 | 4 |
 | Tie colors (Oaks, Eyring, Christofferson) + choir, from a fixed palette | 4 | 12 |
-| Over/under on women praying, women speaking, and speakers from outside the US | 3 | 9 |
-| Over/under on "Jesus Christ", "temple(s)", "covenant(s)", "Book of Mormon" | 4 | 12 |
-| Over/under on times President Oaks is quoted | 1 | 3 |
+| Over/under: four word counts, Oaks quoted, women praying, women speaking, speakers from outside the US | 8 | 24 |
 | Sessions watched (1 pt each) | 1 | 4 |
 
 Point values and over/under lines are editable in the admin at any time.

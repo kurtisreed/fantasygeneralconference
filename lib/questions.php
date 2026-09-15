@@ -30,11 +30,6 @@ function section_meta(): array
             'blurb' => 'Three points each. Pick the closest color from the list.',
             'layout' => 'list',
         ],
-        'counts' => [
-            'title' => 'Counting',
-            'blurb' => 'Pick a side. Three points each, and no ties — every line ends in a half.',
-            'layout' => 'list',
-        ],
         'words' => [
             'title' => 'Over / under',
             'blurb' => 'Pick a side. Three points each. Every line ends in a half, so there are no ties.',
@@ -62,6 +57,23 @@ function get_event(?string $slug = null): ?array
     // the fallback keeps a fresh install (everything still draft) working.
     return q1('SELECT * FROM events WHERE status <> "draft" ORDER BY ' . EVENT_ORDER . ' LIMIT 1')
         ?? q1('SELECT * FROM events ORDER BY ' . EVENT_ORDER . ' LIMIT 1');
+}
+
+/**
+ * Display details for one section, with a sane fallback.
+ *
+ * A section can be retired in the code while a conference's questions still
+ * carry it — right up until somebody runs Questions → Update the sheet. This
+ * keeps that window from rendering a blank heading.
+ */
+function section_info(string $key): array
+{
+    $meta = section_meta();
+    return $meta[$key] ?? [
+        'title'  => ucfirst(str_replace('_', ' ', $key)),
+        'blurb'  => '',
+        'layout' => 'list',
+    ];
 }
 
 function get_event_by_id(int $id): ?array

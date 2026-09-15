@@ -80,7 +80,7 @@ echo '  questions ' . count($questions) . ', ' . total_points_possible($question
 
 foreach (group_by_section($questions) as $sec => $qs) {
     printf("  %-14s %2d question%s  %2d pts\n",
-        section_meta()[$sec]['title'], count($qs), count($qs) === 1 ? ' ' : 's', total_points_possible($qs));
+        section_info($sec)['title'], count($qs), count($qs) === 1 ? ' ' : 's', total_points_possible($qs));
 }
 
 echo "\nOver/under lines:\n";

@@ -37,10 +37,12 @@ All three measured the same way, with the same script:
 April 2026 ran short because the Solemn Assembly sustaining President Oaks took
 session time.
 
-## The counting questions
+## The three that count people, not words
 
-These are over/unders too, so nothing on the sheet has to be typed. Counted
-from the session summaries and bylines in the Liahona:
+They sit in the same Over/under section as the word counts, and work the same
+way — but no pattern can find them, because the transcripts don't say who
+prayed or where anybody was born. Enter these by hand on Results. Counted from
+the session summaries and bylines in the Liahona:
 
 | | Apr 2025 | Oct 2025 | Apr 2026 | Line |
 |---|---:|---:|---:|---:|

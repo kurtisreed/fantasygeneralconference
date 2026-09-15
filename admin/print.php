@@ -10,7 +10,6 @@ $eventId = (int)$event['id'];
 
 $questions = get_questions($eventId);
 $sections  = group_by_section($questions);
-$meta      = section_meta();
 $possible  = total_points_possible($questions);
 $copies    = max(1, min(30, query_int('copies', 1)));
 ?><!doctype html>
@@ -79,7 +78,7 @@ $copies    = max(1, min(30, query_int('copies', 1)));
 
   <?php if ($gridQs): ?>
     <section class="p-section">
-      <h2><?= e($meta['apostles']['title']) ?>
+      <h2><?= e(section_info('apostles')['title']) ?>
         <span class="p-pts"><?= total_points_possible($gridQs) ?> pts</span>
       </h2>
       <table class="p-grid">
@@ -107,7 +106,7 @@ $copies    = max(1, min(30, query_int('copies', 1)));
 
   <?php foreach ($rest as $key => $qs): ?>
     <section class="p-section <?= $key === 'first_speaker' ? 'page-break' : '' ?>">
-      <h2><?= e($meta[$key]['title']) ?>
+      <h2><?= e(section_info($key)['title']) ?>
         <span class="p-pts"><?= total_points_possible($qs) ?> pts</span>
       </h2>
       <?php foreach ($qs as $qq): ?>

@@ -14,12 +14,11 @@ require_once __DIR__ . '/questions.php';
  */
 function render_sheet_sections(array $questions, array $answers, bool $editable, int $watched = 0): void
 {
-    $meta     = section_meta();
     $sections = group_by_section($questions);
     $dis      = $editable ? '' : 'disabled';
 
     foreach ($sections as $key => $qs):
-        $m = $meta[$key]; ?>
+        $m = section_info($key); ?>
       <section class="card section" id="sec-<?= e($key) ?>">
         <header class="section-head">
           <h2><?= e($m['title']) ?></h2>
