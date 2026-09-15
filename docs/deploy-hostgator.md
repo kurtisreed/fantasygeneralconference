@@ -33,15 +33,62 @@ single action; the third is fine but manual every time.
 
 ### Option A — cPanel Git Version Control (easiest to keep updated)
 
-1. cPanel → **SSH Access** → *Manage SSH Keys* → generate a key if you have
-   none, then **View/Download** the public key and copy it.
-2. GitHub → your repo → **Settings → Deploy keys → Add deploy key**. Paste the
-   public key, name it "hostgator", and leave *Allow write access* **off**.
-   A read-only deploy key is all the server needs.
-3. cPanel → **Git™ Version Control** → *Create* → *Clone a Repository*:
+1. cPanel → **SSH Access** → *Manage SSH Keys* → **Generate a New Key**.
+   - Leave the **passphrase empty**. cPanel's git runs unattended and cannot
+     type a passphrase; a protected key fails every clone and pull.
+   - Key type **ed25519** (or RSA 4096 if ed25519 isn't offered).
+2. Still in *Manage SSH Keys*, find the key under **Public Keys** and click
+   **View/Download**. Copy the text that begins `ssh-ed25519` or `ssh-rsa`.
+3. GitHub → your repo → **Settings → Deploy keys → Add deploy key**. Paste it,
+   name it "hostgator", and leave *Allow write access* **off**. A read-only
+   deploy key is all the server needs.
+4. cPanel → **Git™ Version Control** → *Create* → *Clone a Repository*:
    - **Clone URL**: `git@github.com:kurtisreed/fantasygeneralconference.git`
    - **Repository Path**: `public_html/fantasygc`
-4. **To update later**: cPanel → Git Version Control → *Manage* → **Pull**.
+5. **To update later**: cPanel → Git Version Control → *Manage* → **Pull**.
+
+#### If GitHub says "Key is invalid — must be in OpenSSH public key format"
+
+You've pasted either the private key or the wrong format. GitHub wants a
+**single line** starting with the key type:
+
+```
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI...  kurtis@hostgator
+```
+
+Three things it must *not* be:
+
+| What you pasted | How to tell |
+|---|---|
+| The private key | starts `-----BEGIN OPENSSH PRIVATE KEY-----` |
+| SSH2 / RFC4716 format | starts `---- BEGIN SSH2 PUBLIC KEY ----` |
+| A wrapped copy | the key is broken across several lines |
+
+cPanel's **Download Key** button often gives the *private* half — use
+**View/Download** on the row under *Public Keys* instead.
+
+If cPanel only shows you the `---- BEGIN SSH2 PUBLIC KEY ----` block, convert
+it. Save it as `key.pub` and run, on any machine with ssh installed:
+
+```bash
+ssh-keygen -i -f key.pub
+```
+
+That prints the one-line OpenSSH form to paste into GitHub.
+
+#### If the clone fails with "could not read Username for 'https://github.com'"
+
+The Clone URL was the HTTPS one. A private repo over HTTPS asks for a login and
+there is no terminal to answer, so it fails immediately. Use the SSH form —
+note the `git@` and the **colon**, not a slash:
+
+```
+git@github.com:kurtisreed/fantasygeneralconference.git
+```
+
+If cPanel already created the repository entry with the wrong URL, remove it
+(Git Version Control → Manage → Remove, which only unregisters it), delete the
+folder in File Manager, and clone again with the SSH URL.
 
 ### Option B — SSH
 
