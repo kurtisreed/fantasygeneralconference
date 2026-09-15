@@ -429,3 +429,36 @@ table { width: 100%; border-collapse: collapse; }
 @media (max-width: 480px) {
   .hero-art img { aspect-ratio: 1344 / 800; }
 }
+
+/* A shallower crop of the same painting, so the standings page is recognisably
+   the same site without repeating the full banner. */
+/* Tall enough to keep the figure whole — a thinner band cut him at the neck. */
+.hero-art.slim img { aspect-ratio: 1344 / 440; object-position: 50% 40%; }
+@media (max-width: 480px) {
+  .hero-art.slim img { aspect-ratio: 1344 / 560; }
+}
+
+/* ---------- how much of the sheet has been scored ---------- */
+.scored { max-width: 340px; margin: 4px auto 0; }
+.scored-bar {
+  height: 7px; border-radius: 999px; overflow: hidden;
+  background: var(--line);
+}
+.scored-bar span {
+  display: block; height: 100%; border-radius: 999px;
+  background: var(--accent); transition: width .4s ease;
+}
+.scored-note { margin: 7px 0 0; font-size: 13px; color: var(--ink-soft); }
+.scored-note strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* ---------- top three ---------- */
+.board-row.medal .rank {
+  color: var(--accent-ink); font-weight: 700;
+  border-radius: 999px; width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 13px;
+}
+.medal-1 .rank { background: var(--gold); }
+.medal-2 .rank { background: #a8a396; }
+.medal-3 .rank { background: #b08356; }
+.board-row.leader .board-pts { color: var(--accent); }

@@ -41,25 +41,45 @@ if ($detailId) {
 $self = 'leaderboard.php' . ($isArchive ? '?event=' . rawurlencode((string)$slug) : '');
 $selfQ = 'leaderboard.php?' . ($isArchive ? 'event=' . rawurlencode((string)$slug) . '&' : '');
 
+$pct = $possible > 0 ? (int)round($scoredPoints / $possible * 100) : 0;
+
 page_head('Standings');
 ?>
-<section class="hero compact">
-  <p class="eyebrow"><?= e($event['name']) ?></p>
-  <h1>Standings</h1>
-  <p class="lede">
-    <?= $scoredPoints ?> of <?= $possible ?> points scored
-    <?= $event['status'] === 'final' ? 'in total.' : 'so far.' ?>
-  </p>
+<figure class="hero-art slim">
+  <img src="<?= e(asset_url('assets/img/shepherd.webp')) ?>" alt="" width="1344" height="756">
+</figure>
+
+<section class="hero hero-titled compact">
+  <p class="eyebrow">Standings</p>
+  <h1><?= e($event['name']) ?></h1>
+
+  <div class="scored">
+    <div class="scored-bar" role="img"
+         aria-label="<?= $pct ?>% of the sheet scored">
+      <span style="width: <?= $pct ?>%"></span>
+    </div>
+    <p class="scored-note">
+      <strong><?= $scoredPoints ?></strong> of <?= $possible ?> points scored
+      <?= $event['status'] === 'final' ? 'in total' : 'so far' ?>
+    </p>
+  </div>
+
   <?php if ($manyEvents): ?>
-    <p class="notice"><a class="link" href="conferences.php">All conferences &rarr;</a></p>
+    <p class="center"><a class="link" href="conferences.php">All conferences &rarr;</a></p>
   <?php endif; ?>
 </section>
 
 <?php if (!$board): ?>
-  <div class="card center"><p class="muted">No sheets submitted yet.</p></div>
+  <div class="card center">
+    <p class="muted">No sheets turned in yet.</p>
+    <a class="btn btn-primary" href="index.php">Make your picks</a>
+  </div>
 <?php else: ?>
   <?php
   $rank = 0; $lastTotal = null; $shown = 0;
+  // No medals until somebody has actually scored — the participation point for
+  // sessions watched makes the sheet look "scored" before conference starts.
+  $anyPoints = (int)$board[0]['total'] > 0;
   ?>
   <ol class="board">
     <?php foreach ($board as $row):
@@ -67,8 +87,11 @@ page_head('Standings');
         if ($lastTotal === null || (int)$row['total'] !== (int)$lastTotal) {
             $rank = $shown;
         }
-        $lastTotal = (int)$row['total']; ?>
-      <li class="board-row <?= $rank === 1 ? 'leader' : '' ?>">
+        $lastTotal = (int)$row['total'];
+        // Only dress the top three once there is something to be on top of.
+        $medal = ($anyPoints && $rank <= 3 && (int)$row['total'] > 0)
+            ? ' medal medal-' . $rank : ''; ?>
+      <li class="board-row<?= $rank === 1 ? ' leader' : '' ?><?= $medal ?>">
         <span class="rank"><?= $rank ?></span>
         <a class="board-name" href="<?= e($selfQ) ?>player=<?= (int)$row['id'] ?>"><?= e($row['display_name']) ?></a>
         <span class="board-pts"><?= (int)$row['total'] ?></span>
