@@ -9,8 +9,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (post('action') === 'reseed') {
         fgc_seed($event['slug'], $event['name']);
+        // Answers that no longer fit the question — a number left on a
+        // question that just became an over/under — would otherwise sit there
+        // scoring as wrong.
+        $dropped = fgc_prune_answers($eventId);
+        $pruned  = 0;
+        foreach (get_questions($eventId, true) as $qq) {
+            if ($qq['type'] === 'over_under') {
+                $pruned += exec_sql(
+                    'DELETE FROM answers WHERE question_id = ? AND value NOT IN ("over","under")',
+                    [(int)$qq['id']]
+                );
+            }
+        }
         recompute_event_scores($eventId);
-        flash('Sheet reset to the built-in April 2026 defaults. Player picks were not touched.');
+
+        $msg = 'Sheet updated to match the app.';
+        $n   = $dropped + $pruned;
+        if ($n > 0) {
+            $msg .= $n === 1
+                ? ' 1 pick no longer fitted its question and was cleared.'
+                : " $n picks no longer fitted their questions and were cleared.";
+        }
+        flash($msg);
         redirect('questions.php');
     }
 
@@ -98,13 +119,23 @@ $locked = $event['status'] !== 'draft' && $event['status'] !== 'open';
 </div>
 </form>
 
-<div class="card danger-zone">
-  <h2>Reset the sheet</h2>
-  <p class="muted">Restores every prompt, point value and line to the built-in April 2026 defaults. Player picks and results are kept.</p>
-  <form method="post" onsubmit="return confirm('Reset all questions to defaults?');">
+<div class="card">
+  <h2>Update this sheet to match the app</h2>
+  <p class="muted">
+    The questions live in the database, so pulling new code doesn&rsquo;t change
+    them &mdash; <strong>run this after every update</strong>. It applies the
+    app&rsquo;s current questions, wording, types and lines to this conference.
+    Picks and results are kept, except any pick that no longer fits its question
+    (a typed number on something that became an over/under, say).
+  </p>
+  <p class="help">
+    It also puts any point values or lines you changed by hand back to the
+    app&rsquo;s defaults &mdash; so do this <em>before</em> tuning, not after.
+  </p>
+  <form method="post" onsubmit="return confirm('Apply the app\'s current questions to this conference?');">
     <?= csrf_field() ?>
     <input type="hidden" name="action" value="reseed">
-    <button type="submit" class="btn btn-danger">Reset to defaults</button>
+    <button type="submit" class="btn btn-primary">Update the sheet</button>
   </form>
 </div>
 <?php page_foot();

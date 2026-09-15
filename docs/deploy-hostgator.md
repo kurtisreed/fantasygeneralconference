@@ -161,9 +161,16 @@ after each fresh install — you only ever run it once per database.
 
 1. Commit and push from your machine.
 2. cPanel → Git Version Control → **Pull** (or `git pull` over SSH).
+3. **Admin → Questions → Update the sheet.**
 
-`config.php` is untouched because git doesn't track it. The database is
-untouched because pulling only changes files.
+Step 3 is the one that's easy to forget. The questions — their wording, type
+and lines — live in the *database*, not in the files, so pulling new code does
+not change them. Symptom: the page around a question updates but the question
+itself doesn't, like a section that still shows a number box after the app
+started calling it an over/under.
+
+`config.php` is untouched because git doesn't track it, and pulling only
+changes files, so your players and their picks are safe either way.
 
 **If a pull changes the database schema** — which only happens when
 `sql/schema.sql` gains a table or column — re-run the installer once; it uses
