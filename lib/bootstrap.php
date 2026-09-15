@@ -1,6 +1,20 @@
 <?php
 declare(strict_types=1);
 
+// lib/util.php uses a PHP 8.1 return type, so on an older PHP the app dies with
+// a parse error and a blank page. Say what's wrong instead. This file itself
+// stays old-PHP-parseable so the message can actually be reached.
+if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+    http_response_code(500);
+    header('Content-Type: text/plain; charset=utf-8');
+    exit(
+        "Fantasy General Conference needs PHP 8.1 or newer.\n"
+        . 'This server is running PHP ' . PHP_VERSION . ".\n\n"
+        . "On cPanel hosting: open MultiPHP Manager, tick this domain, and set\n"
+        . "the PHP version to 8.1 or later.\n"
+    );
+}
+
 define('APP_ROOT', dirname(__DIR__));
 
 $configPath = APP_ROOT . '/config.php';

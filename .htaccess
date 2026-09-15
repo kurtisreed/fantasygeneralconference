@@ -6,3 +6,8 @@
 
 RedirectMatch 404 /sql/
 RedirectMatch 404 /lib/
+
+# Deploying by "git clone" puts .git inside the web root, where it would serve
+# the whole source and history to anyone who asks for it.
+RedirectMatch 404 /\.git
+RedirectMatch 404 /\.htaccess$

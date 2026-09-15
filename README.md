@@ -5,8 +5,8 @@ conducts, what color tie President Oaks wears and how many times somebody says
 "covenant." A scorekeeper enters the results as conference happens, and the
 standings update live.
 
-Vanilla PHP 8 + MySQL/MariaDB. No framework, no Composer, no build step —
-upload the folder and it runs.
+Vanilla PHP (8.1 or newer) + MySQL/MariaDB. No framework, no Composer, no
+build step — upload the folder and it runs.
 
 ## The sheet (71 points)
 
@@ -51,6 +51,11 @@ FGC_ADMIN_USER=you FGC_ADMIN_PASS=your-password php tools/install.php
 Open the folder in a browser. The admin is at `admin/`.
 
 ## Deploying to shared hosting
+
+Step-by-step for HostGator and other cPanel hosts, including how to set up
+one-click updates from GitHub: [docs/deploy-hostgator.md](docs/deploy-hostgator.md).
+
+The short version:
 
 1. Create a MySQL database and user in your host's control panel.
 2. Upload everything **except** `config.php` (it's gitignored on purpose).
@@ -167,6 +172,7 @@ tools/install.php  one-time installer (delete after setup)
 tools/count_words.php   fetches conference talks and counts the over/under words
 tools/new_conference.php  sets up the sheet for the next conference
 docs/word-counts.md    historical counts, counting rules, how the lines were set
+docs/deploy-hostgator.md  deploying and updating on cPanel hosting
 ```
 
 ## Question types
