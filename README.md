@@ -81,6 +81,22 @@ fallback in case PHP ever stops executing.
    every score, so the standings move between sessions.
 6. **Players** — enter sessions watched when you score the sheets together.
 
+### Anyone without a phone
+
+**Print** produces the sheet on paper — pick how many copies and use the
+browser's own Print → Save as PDF. It's two pages of letter, laid out so a
+section never splits across the break. There's no PDF library to install, and
+CSS gives better control of the typography than one would.
+
+**Paper sheets** is where you type a returned sheet in. Enter the name, click
+through the same form the phone shows, save. It lands in the standings like any
+other entry, validates exactly the same way, and still works after picks lock —
+so you can do a stack of them on Sunday night.
+
+That path is worth preferring over scanning the sheets and generating SQL:
+nothing has to parse handwriting, nothing writes to the database unvalidated,
+and you don't need anybody's help to do it.
+
 **Speakers** edits the names in the "who speaks when" grid and the choices for
 who conducts and who speaks first. The list belongs to the conference, so a
 past one keeps the names it was played with. Renaming somebody keeps their
@@ -143,8 +159,9 @@ play.php           the sheet
 submitted.php      confirmation + entry code
 leaderboard.php    standings; ?event=<slug> for a past one, ?player=N for a sheet
 conferences.php    every conference and its winner
-admin/             login, conferences, dashboard, results, players, speakers, questions, event
-lib/               db, scoring engine, question loading, auth, layout
+admin/             login, conferences, dashboard, results, players, paper sheets,
+                   printable sheet, speakers, questions, event
+lib/               db, scoring engine, question loading, sheet rendering, auth, layout
 sql/schema.sql     tables
 tools/install.php  one-time installer (delete after setup)
 tools/count_words.php   fetches conference talks and counts the over/under words

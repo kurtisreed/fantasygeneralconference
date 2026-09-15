@@ -33,12 +33,15 @@ admin_chrome('Dashboard', 'index.php', $event);
     <li><strong>Before conference</strong> — set the over/under lines on <a href="questions.php">Questions</a>, then flip the event to <em>open</em> on <a href="event.php">Event</a> and share the link.</li>
     <li><strong>Saturday morning</strong> — flip to <em>locked</em> (or set a lock time and let it happen on its own).</li>
     <li><strong>After each session</strong> — fill in what you know on <a href="results.php">Results</a>. Every answer is a dropdown or a number, and the standings update the moment you save.</li>
+    <li><strong>Anyone without a phone</strong> — hand them a <a href="print.php">printed sheet</a>, then type it in on <a href="enter.php">Paper sheets</a>. It lands in the standings like any other entry, and still works after picks lock.</li>
     <li><strong>When you score sheets together</strong> — enter sessions watched on <a href="players.php">Players</a>.</li>
   </ol>
 </div>
 
 <div class="actions">
   <a class="btn btn-primary" href="results.php">Enter results</a>
+  <a class="btn" href="print.php">Print sheets</a>
+  <a class="btn" href="enter.php">Type in a paper sheet</a>
   <a class="btn" href="../leaderboard.php">View standings</a>
 </div>
 <?php page_foot();

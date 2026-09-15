@@ -1,0 +1,122 @@
+/* Printable pick sheet. Deliberately black-on-white and independent of the
+   app's theme — this is paper, not a screen. */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #f3f2ee;
+  color: #000;
+  font: 10pt/1.28 ui-sans-serif, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* ---------- screen-only toolbar ---------- */
+.toolbar {
+  background: #fff; border-bottom: 1px solid #d8d4c8;
+  padding: 14px 20px; position: sticky; top: 0; z-index: 10;
+}
+.toolbar-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+.toolbar label { font-size: 13px; font-weight: 600; }
+.toolbar input {
+  font: inherit; width: 70px; padding: 6px 8px;
+  border: 1px solid #c9c4b6; border-radius: 7px;
+}
+.toolbar .btn {
+  font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+  border: 1px solid #c9c4b6; border-radius: 7px; padding: 7px 14px;
+  background: #fff; color: #000; text-decoration: none;
+}
+.toolbar .btn-primary { background: #3f5d8a; border-color: #3f5d8a; color: #fff; }
+.toolbar-hint { font-size: 12px; color: #5c5647; margin: 10px 0 0; }
+
+/* ---------- the sheet ---------- */
+.sheet {
+  background: #fff;
+  width: 8.5in;
+  min-height: 11in;
+  margin: 20px auto;
+  padding: 0.5in 0.55in;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
+}
+
+.sheet-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; border-bottom: 2px solid #000; padding-bottom: 8px;
+}
+.sheet-kicker {
+  margin: 0; font-size: 8.5pt; letter-spacing: .18em;
+  text-transform: uppercase; font-weight: 700;
+}
+.sheet-head h1 { margin: 1px 0 0; font-size: 17pt; line-height: 1.1; }
+
+.sheet-score { text-align: right; flex: none; font-size: 8.5pt; }
+.sheet-score-label {
+  display: block; text-transform: uppercase; letter-spacing: .12em; font-weight: 700;
+}
+.sheet-score-box {
+  display: inline-block; width: 64px; height: 30px;
+  border: 1.5px solid #000; border-radius: 3px; vertical-align: middle;
+}
+.sheet-score-of { display: block; margin-top: 2px; }
+
+.sheet-name { display: flex; align-items: baseline; gap: 8px; margin: 12px 0 6px; }
+.fill-label { font-weight: 700; font-size: 10pt; white-space: nowrap; }
+.fill-line { flex: 1; border-bottom: 1px solid #000; height: 17px; min-width: 120px; display: inline-block; }
+.fill-line.short { flex: none; width: 70px; }
+
+.sheet-intro { margin: 0 0 10px; font-size: 9pt; }
+
+/* ---------- sections ---------- */
+.p-section { margin-bottom: 9px; break-inside: avoid; }
+.p-section h2 {
+  font-size: 10.5pt; margin: 0 0 6px;
+  border-bottom: 1px solid #000; padding-bottom: 2px;
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.p-pts { font-size: 8pt; font-weight: 600; }
+
+/* the apostle grid */
+.p-grid { width: 100%; border-collapse: collapse; }
+.p-grid th, .p-grid td { padding: 1px 3px; }
+.p-grid thead th { font-size: 7.5pt; text-align: center; font-weight: 700; }
+.p-grid .p-grid-name { text-align: left; font-size: 9.5pt; font-weight: 600; width: 40%; }
+.p-grid tbody tr { border-bottom: 1px solid #ddd; }
+.p-grid td { text-align: center; }
+
+/* one question per line */
+.p-q { margin-bottom: 5px; break-inside: avoid; }
+.p-prompt {
+  margin: 0 0 2px; font-size: 9pt; font-weight: 600;
+  display: flex; justify-content: space-between; gap: 10px; align-items: baseline;
+}
+.p-choices { display: flex; flex-wrap: wrap; gap: 3px 11px; align-items: center; }
+.p-choices-tight { gap: 4px 11px; }
+.p-choice { display: inline-flex; align-items: center; gap: 4px; font-size: 8.5pt; white-space: nowrap; }
+
+.box {
+  display: inline-block; width: 13px; height: 13px;
+  border: 1.2px solid #000; border-radius: 2px;
+  flex: none; background: #fff;
+}
+
+/* ---------- footer ---------- */
+.sheet-foot {
+  margin-top: 12px; padding-top: 7px; border-top: 2px solid #000;
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+}
+.sheet-watched { display: flex; align-items: baseline; gap: 8px; flex: 1; }
+.sheet-slug { margin: 0; font-size: 7.5pt; color: #666; font-family: ui-monospace, Menlo, monospace; }
+
+/* ---------- print ---------- */
+@media print {
+  @page { size: letter portrait; margin: 0.45in; }
+  body { background: #fff; }
+  .no-print { display: none !important; }
+  .sheet {
+    width: auto; min-height: 0; margin: 0; padding: 0;
+    box-shadow: none;
+    /* Keep one person's sheet off the next person's page. */
+    break-after: page;
+  }
+  .sheet:last-child { break-after: auto; }
+}
