@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS players (
   display_name     VARCHAR(80) NOT NULL,
   entry_code       CHAR(6) NOT NULL,
   sessions_watched TINYINT NOT NULL DEFAULT 0,
+  watched_sessions VARCHAR(64) NULL,
   submitted_at     DATETIME NULL,
   created_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

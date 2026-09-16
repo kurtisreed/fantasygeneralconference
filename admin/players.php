@@ -10,10 +10,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exec_sql('DELETE FROM players WHERE id = ? AND event_id = ?', [(int)post('player_id'), $eventId]);
         flash('Entry deleted.');
     } else {
+        // Every row posts back on every save, whether or not the admin
+        // touched it — only a real change should clear a player's own
+        // self-reported detail, or reopening this page would silently wipe
+        // everyone else's checkboxes.
+        $current = [];
+        foreach (q('SELECT id, sessions_watched FROM players WHERE event_id = ?', [$eventId]) as $p) {
+            $current[(int)$p['id']] = (int)$p['sessions_watched'];
+        }
         foreach (($_POST['watched'] ?? []) as $pid => $n) {
+            $pid = (int)$pid;
+            $n = max(0, min(4, (int)$n));
+            if (($current[$pid] ?? null) === $n) {
+                continue;
+            }
             exec_sql(
-                'UPDATE players SET sessions_watched = ? WHERE id = ? AND event_id = ?',
-                [max(0, min(4, (int)$n)), (int)$pid, $eventId]
+                'UPDATE players SET sessions_watched = ?, watched_sessions = NULL WHERE id = ? AND event_id = ?',
+                [$n, $pid, $eventId]
             );
         }
         recompute_event_scores($eventId);

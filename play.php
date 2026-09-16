@@ -30,8 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (post('action') === 'watched') {
         // Self-reported, so it works any time — including after picks lock,
         // which is when the sessions actually happen.
-        $n = max(0, min($watchedMax, (int)post('sessions_watched')));
-        exec_sql('UPDATE players SET sessions_watched = ? WHERE id = ?', [$n, $playerId]);
+        $validCodes = array_column($sessions, 'code');
+        $checked = array_values(array_intersect((array)($_POST['watched'] ?? []), $validCodes));
+        $n = min($watchedMax, count($checked));
+        exec_sql(
+            'UPDATE players SET sessions_watched = ?, watched_sessions = ? WHERE id = ?',
+            [$n, $checked ? implode(',', $checked) : null, $playerId]
+        );
         recompute_event_scores($eventId);
         flash('Sessions watched updated.');
         redirect('play.php');
@@ -89,19 +94,16 @@ page_head('Your sheet');
   <form method="post" class="stack">
     <?= csrf_field() ?>
     <input type="hidden" name="action" value="watched">
+    <?php $watchedCodes = array_filter(explode(',', (string)($player['watched_sessions'] ?? ''))); ?>
     <div class="choices">
-      <?php $watched = (int)$player['sessions_watched']; ?>
-      <?php for ($n = 0; $n <= $watchedMax; $n++): ?>
+      <?php foreach ($sessions as $s): ?>
         <label class="chip">
-          <input type="radio" name="sessions_watched" value="<?= $n ?>" <?= $watched === $n ? 'checked' : '' ?>>
-          <span><?= $n ?></span>
+          <input type="checkbox" name="watched[]" value="<?= e($s['code']) ?>"
+                 <?= in_array($s['code'], $watchedCodes, true) ? 'checked' : '' ?>>
+          <span><?= e($s['short_name']) ?></span>
         </label>
-      <?php endfor; ?>
+      <?php endforeach; ?>
     </div>
-    <p class="help">
-      <?= e(implode(', ', array_column($sessions, 'short_name'))) ?>
-      &mdash; <?= count($sessions) ?> sessions total.
-    </p>
     <button type="submit" class="btn btn-primary">Save</button>
   </form>
 </div>
