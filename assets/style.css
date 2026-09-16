@@ -392,6 +392,15 @@ table { width: 100%; border-collapse: collapse; }
 .choice form .btn { margin-top: auto; }
 .choice-go { margin-top: auto; text-align: center; }
 
+/* Same size as the other two — still "equal weight" — but a gold edge and a
+   peek at the top three make it the one you want to tap. */
+.standings-teaser { border-color: var(--gold); border-width: 2px; }
+.board-mini { margin: 4px 0 12px; }
+.board-mini .board-row { padding: 8px 10px; margin-bottom: 6px; gap: 8px; }
+.board-mini .board-name { font-size: 14px; }
+.board-mini .board-pts { font-size: 16px; }
+.board-mini .rank { width: 22px; }
+
 /* ---------- the painting ---------- */
 .hero-art {
   margin: 14px 0 0;

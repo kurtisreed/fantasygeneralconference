@@ -97,7 +97,7 @@ page_head('Play');
 
   <section class="card choice">
     <h2>Already started?</h2>
-    <p class="muted">Enter the 6-character code to edit your picks. If you don't remember the code, you can see what your entries were in the standings section.</p>
+    <p class="muted">Enter the 6-character code to edit your picks. If you don't remember the code, text Bishop Reed, and he can get it for you.</p>
     <form method="post">
       <?= csrf_field() ?>
       <input type="hidden" name="action" value="resume">
@@ -108,20 +108,39 @@ page_head('Play');
     </form>
   </section>
 
-  <section class="card choice">
+  <section class="card choice standings-teaser">
     <h2>Standings!</h2>
-    <p class="muted">
-      <?php if (!$board): ?>
-        Nobody has turned in a sheet yet.
-      <?php elseif ($leader !== null): ?>
-        <?= count($board) ?> playing.
-        <strong><?= e($leader['display_name']) ?></strong> leads with <?= (int)$leader['total'] ?>.
-      <?php else: ?>
+
+    <?php if (!$board): ?>
+      <p class="muted">Nobody has turned in a sheet yet &mdash; be the first!</p>
+
+    <?php elseif ($leader === null): ?>
+      <p class="muted">
         <?= count($board) ?> sheet<?= count($board) === 1 ? '' : 's' ?> in.
         Scoring starts when conference does.
-      <?php endif; ?>
-    </p>
-    <a class="btn choice-go" href="leaderboard.php">See the standings</a>
+      </p>
+
+    <?php else: ?>
+      <ol class="board board-mini">
+        <?php
+        $rank = 0; $lastTotal = null; $shown = 0;
+        foreach (array_slice($board, 0, 3) as $row):
+            $shown++;
+            if ($lastTotal === null || (int)$row['total'] !== (int)$lastTotal) {
+                $rank = $shown;
+            }
+            $lastTotal = (int)$row['total']; ?>
+          <li class="board-row<?= $rank === 1 ? ' leader' : '' ?> medal medal-<?= $rank ?>">
+            <span class="rank"><?= $rank ?></span>
+            <span class="board-name"><?= e($row['display_name']) ?></span>
+            <span class="board-pts"><?= (int)$row['total'] ?></span>
+          </li>
+        <?php endforeach; ?>
+      </ol>
+      <p class="muted"><?= count($board) ?> playing.</p>
+    <?php endif; ?>
+
+    <a class="btn btn-primary choice-go" href="leaderboard.php">See the full standings</a>
   </section>
 
 </div>
