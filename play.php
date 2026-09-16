@@ -96,7 +96,7 @@ page_head('Your sheet');
 <form method="post" id="sheet" <?= $open ? '' : 'class="locked"' ?>>
 <?= csrf_field() ?>
 
-<?php render_sheet_sections($questions, $answers, $open, (int)$player['sessions_watched'], true); ?>
+<?php render_sheet_sections($questions, $answers, $open, (int)$player['sessions_watched'], true); // hide: covered by the card above ?>
 
 <?php if ($open): ?>
   <div class="submit-bar">
