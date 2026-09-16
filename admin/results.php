@@ -22,6 +22,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $qid = (int)$qq['id'];
         $raw = $_POST['r'][$qid] ?? '';
+
+        // The apostles grid posts an array — a speaker can talk in more than
+        // one session, so any number of sessions can be checked off as the
+        // official answer. Everything else is still a single value.
+        if (is_array($raw)) {
+            $valid = array_column($qq['options'], 'value');
+            $vals = array_values(array_intersect($raw, $valid));
+            if (!$vals) {
+                $del->execute([$qid]);
+                continue;
+            }
+            $up->execute([$qid, implode(',', $vals), null]);
+            continue;
+        }
+
         $raw = is_string($raw) ? trim($raw) : '';
 
         if ($raw === '') {
@@ -61,14 +76,29 @@ $sections = group_by_section($questions);
         $qid = (int)$qq['id'];
         $r = $results[$qid] ?? null;
         $cur = $r ? ($r['value'] ?? ($r['numeric_value'] !== null ? (string)(float)$r['numeric_value'] : '')) : '';
-        $answeredBy = (int)q1('SELECT COUNT(*) c FROM answers WHERE question_id = ?', [$qid])['c']; ?>
+        $answeredBy = (int)q1('SELECT COUNT(*) c FROM answers WHERE question_id = ?', [$qid])['c'];
+        // A speaker can talk in more than one session, so the apostles grid
+        // takes any number of checked sessions instead of one dropdown pick.
+        $multiSession = $qq['type'] === 'pick_one' && $key === 'apostles'; ?>
       <div class="q q-admin">
-        <label class="q-prompt" for="r<?= $qid ?>">
-          <?= e($key === 'apostles' ? 'Which session did ' . $qq['prompt'] . ' speak in?' : $qq['prompt']) ?>
+        <<?= $multiSession ? 'p' : 'label' ?> class="q-prompt"<?= $multiSession ? '' : ' for="r' . $qid . '"' ?>>
+          <?= e($multiSession ? 'Which session(s) did ' . $qq['prompt'] . ' speak in?' : $qq['prompt']) ?>
           <span class="q-pts"><?= (int)$qq['points'] ?> pt<?= $qq['points'] == 1 ? '' : 's' ?> · <?= $answeredBy ?> picked</span>
-        </label>
+        </<?= $multiSession ? 'p' : 'label' ?>>
 
-        <?php if ($qq['type'] === 'pick_one'): ?>
+        <?php if ($multiSession): ?>
+          <?php $curVals = $cur !== '' ? explode(',', $cur) : []; ?>
+          <div class="choices">
+            <?php foreach ($qq['options'] as $o): ?>
+              <label class="chip">
+                <input type="checkbox" name="r[<?= $qid ?>][]" value="<?= e($o['value']) ?>"
+                       <?= in_array($o['value'], $curVals, true) ? 'checked' : '' ?>>
+                <span><?= e($o['label']) ?></span>
+              </label>
+            <?php endforeach; ?>
+          </div>
+
+        <?php elseif ($qq['type'] === 'pick_one'): ?>
           <select id="r<?= $qid ?>" name="r[<?= $qid ?>]">
             <option value="">— not yet —</option>
             <?php foreach ($qq['options'] as $o): ?>

@@ -33,7 +33,11 @@ function score_answer(array $question, ?string $answer, ?array $result, int $wat
             if (($result['value'] ?? null) === null || $result['value'] === '') {
                 return [0, 'pending'];
             }
-            return $answer === $result['value'] ? [$pts, 'correct'] : [0, 'wrong'];
+            // A speaker can talk in more than one session, so the apostles
+            // section's result may list several accepted sessions — any one
+            // of them earns full points, same as a single-answer question.
+            $accepted = explode(',', $result['value']);
+            return in_array($answer, $accepted, true) ? [$pts, 'correct'] : [0, 'wrong'];
 
         case 'number':
             if ($result['numeric_value'] === null) {

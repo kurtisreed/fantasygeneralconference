@@ -237,12 +237,14 @@ function display_value(array $question, ?string $value): string
         return '—';
     }
     if ($question['type'] === 'pick_one') {
-        foreach ($question['options'] as $o) {
-            if ($o['value'] === $value) {
-                return $o['label'];
-            }
+        // A result can list more than one accepted session (see the apostles
+        // section), so look up each piece rather than the whole string.
+        $byValue = array_column($question['options'], 'label', 'value');
+        $labels = [];
+        foreach (explode(',', $value) as $v) {
+            $labels[] = $byValue[$v] ?? $v;
         }
-        return $value;
+        return implode(', ', $labels);
     }
     if ($question['type'] === 'over_under') {
         $line = $question['config']['line'] ?? '?';
