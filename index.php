@@ -117,7 +117,7 @@ page_head('Play');
   <?php if ($open && !$continuePlayer): ?>
   <section class="card choice">
     <h2>Make new picks!</h2>
-    <p class="muted">Make your picks before General Conference starts.</p>
+    <p class="muted">Make your picks before General Conference starts. Only one sheet person.</p>
     <form method="post">
       <?= csrf_field() ?>
       <label for="display_name">Your name</label>
@@ -131,7 +131,7 @@ page_head('Play');
   <?php if (!$continuePlayer): ?>
   <section class="card choice">
     <h2>Already started?</h2>
-    <p class="muted">Enter the 6-character code to edit your picks. If you don't remember the code, text Bishop Reed, and he can get it for you.</p>
+    <p class="muted">Enter the 6-character code to edit your picks. If you don't remember the code, text Bishop Reed or Porter, and they can get it for you.</p>
     <form method="post">
       <?= csrf_field() ?>
       <input type="hidden" name="action" value="resume">
