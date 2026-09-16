@@ -101,10 +101,13 @@ page_head('Play');
 
 <?php if ($continuePlayer): ?>
   <section class="card continue-card">
-    <p class="continue-who">
-      Welcome back, <strong><?= e($continuePlayer['display_name']) ?></strong>.
-      <a class="link continue-switch" href="?switch=1">Not you?</a>
-    </p>
+    <div class="continue-text">
+      <p class="continue-who">
+        Welcome back, <strong><?= e($continuePlayer['display_name']) ?></strong>.
+        <a class="link continue-switch" href="?switch=1">Not you?</a>
+      </p>
+      <p class="muted continue-note">Click below to change your picks and check off which sessions you watched.</p>
+    </div>
     <a class="btn btn-primary" href="play.php">Continue to my sheet &rarr;</a>
   </section>
 <?php endif; ?>
