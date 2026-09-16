@@ -36,7 +36,10 @@ $players = q(
 ?>
 <section class="hero compact">
   <h1>Players</h1>
-  <p class="lede">Enter sessions watched here when you score the sheets together.</p>
+  <p class="lede">
+    Players can self-report sessions watched on their own sheet. Use this to
+    fix a number, or to enter it yourself for anyone who didn't.
+  </p>
 </section>
 
 <form method="post">

@@ -90,6 +90,17 @@ function watched_per(array $questions): int
     return 1;
 }
 
+/** Most sessions a player can be credited for, read off the same question. */
+function watched_max(array $questions): int
+{
+    foreach ($questions as $q) {
+        if ($q['type'] === 'watched') {
+            return (int)($q['config']['max'] ?? 4);
+        }
+    }
+    return 4;
+}
+
 function get_event_by_id(int $id): ?array
 {
     return q1('SELECT * FROM events WHERE id = ?', [$id]);

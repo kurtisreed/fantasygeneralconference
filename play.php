@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/lib/bootstrap.php';
 require_once APP_ROOT . '/lib/questions.php';
 require_once APP_ROOT . '/lib/sheet.php';
+require_once APP_ROOT . '/lib/scoring.php';
 
 $event = get_event();
 if (!$event) {
@@ -20,9 +21,22 @@ $open = entries_open($event);
 $questions = get_questions($eventId);
 $possible = total_points_possible($questions);
 $answers = get_answers($playerId);
+$sessions = get_sessions($eventId);
+$watchedMax = watched_max($questions);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
+
+    if (post('action') === 'watched') {
+        // Self-reported, so it works any time — including after picks lock,
+        // which is when the sessions actually happen.
+        $n = max(0, min($watchedMax, (int)post('sessions_watched')));
+        exec_sql('UPDATE players SET sessions_watched = ? WHERE id = ?', [$n, $playerId]);
+        recompute_event_scores($eventId);
+        flash('Sessions watched updated.');
+        redirect('play.php');
+    }
+
     if (!$open) {
         flash('Picks are locked — nothing was changed.');
         redirect('play.php');
@@ -51,7 +65,7 @@ page_head('Your sheet');
 <form method="post" id="sheet" <?= $open ? '' : 'class="locked"' ?>>
 <?= csrf_field() ?>
 
-<?php render_sheet_sections($questions, $answers, $open, (int)$player['sessions_watched']); ?>
+<?php render_sheet_sections($questions, $answers, $open, (int)$player['sessions_watched'], true); ?>
 
 <?php if ($open): ?>
   <div class="submit-bar">
@@ -62,6 +76,35 @@ page_head('Your sheet');
   <p class="center"><a class="link" href="leaderboard.php">See the standings &rarr;</a></p>
 <?php endif; ?>
 </form>
+
+<div class="card section" id="sec-watched-report">
+  <header class="section-head">
+    <h2>Sessions watched</h2>
+    <span class="pill"><?= watched_per($questions) ?> pts each</span>
+  </header>
+  <p class="muted">
+    Check off every session you actually watched — this always works, even
+    after picks lock, since that's when conference actually happens.
+  </p>
+  <form method="post" class="stack">
+    <?= csrf_field() ?>
+    <input type="hidden" name="action" value="watched">
+    <div class="choices">
+      <?php $watched = (int)$player['sessions_watched']; ?>
+      <?php for ($n = 0; $n <= $watchedMax; $n++): ?>
+        <label class="chip">
+          <input type="radio" name="sessions_watched" value="<?= $n ?>" <?= $watched === $n ? 'checked' : '' ?>>
+          <span><?= $n ?></span>
+        </label>
+      <?php endfor; ?>
+    </div>
+    <p class="help">
+      <?= e(implode(', ', array_column($sessions, 'short_name'))) ?>
+      &mdash; <?= count($sessions) ?> sessions total.
+    </p>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
 
 <script src="<?= e(asset_url('assets/app.js')) ?>"></script>
 <?php

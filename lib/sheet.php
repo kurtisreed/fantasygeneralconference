@@ -9,10 +9,12 @@ require_once __DIR__ . '/questions.php';
  * Shared by the player's own sheet and the admin's paper-entry screen so the
  * two can't drift apart. $editable is false for a locked player view.
  *
- * $watched is shown on the participation question, which the scorekeeper fills
- * in rather than the player.
+ * $watched is the session count shown on the participation question. It's
+ * never editable inline here — the player has their own self-report card
+ * (see play.php) and the admin has a separate field (see admin/enter.php) —
+ * this is just a readout, worded differently depending on who's looking.
  */
-function render_sheet_sections(array $questions, array $answers, bool $editable, int $watched = 0): void
+function render_sheet_sections(array $questions, array $answers, bool $editable, int $watched = 0, bool $selfReported = false): void
 {
     $sections = group_by_section($questions);
     $dis      = $editable ? '' : 'disabled';
@@ -69,7 +71,9 @@ function render_sheet_sections(array $questions, array $answers, bool $editable,
               <?php if ($qq['type'] === 'watched'): ?>
                 <p class="help locked-note">
                   Currently recorded: <strong><?= $watched ?></strong>.
-                  The scorekeeper fills this in when the sheets are scored.
+                  <?= $selfReported
+                      ? 'Update it in the Sessions watched card below.'
+                      : 'The scorekeeper fills this in when the sheets are scored.' ?>
                 </p>
 
               <?php elseif ($qq['type'] === 'pick_one'): ?>

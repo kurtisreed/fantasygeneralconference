@@ -86,7 +86,9 @@ fallback in case PHP ever stops executing.
 4. Picks freeze automatically at the lock time, or flip status to *locked*.
 5. **Results** — after each session, fill in what you know. Saving recomputes
    every score, so the standings move between sessions.
-6. **Players** — enter sessions watched when you score the sheets together.
+6. Players self-report sessions watched from their own sheet at any point,
+   including after picks lock. **Players** shows the same field for anyone
+   who needs it entered for them.
 
 ### Anyone without a phone
 
