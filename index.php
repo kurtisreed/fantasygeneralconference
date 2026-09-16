@@ -111,7 +111,7 @@ page_head('Play');
 
 <div class="trio">
 
-  <?php if ($open): ?>
+  <?php if ($open && !$continuePlayer): ?>
   <section class="card choice">
     <h2>Make new picks!</h2>
     <p class="muted">Make your picks before General Conference starts.</p>
@@ -125,6 +125,7 @@ page_head('Play');
   </section>
   <?php endif; ?>
 
+  <?php if (!$continuePlayer): ?>
   <section class="card choice">
     <h2>Already started?</h2>
     <p class="muted">Enter the 6-character code to edit your picks. If you don't remember the code, text Bishop Reed, and he can get it for you.</p>
@@ -137,6 +138,7 @@ page_head('Play');
       <button type="submit" class="btn">Open my sheet</button>
     </form>
   </section>
+  <?php endif; ?>
 
   <section class="card choice standings-teaser">
     <h2>Standings!</h2>
