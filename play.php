@@ -55,6 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 page_head('Your sheet');
 ?>
+<figure class="hero-art slim">
+  <img src="<?= e(asset_url('assets/img/shepherd.webp')) ?>" alt="" width="1344" height="756">
+</figure>
+
 <section class="hero compact">
   <p class="eyebrow"><?= e($event['name']) ?></p>
   <h1><?= e($player['display_name']) ?></h1>
