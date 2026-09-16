@@ -34,8 +34,9 @@ page_head('Saved');
   <p class="muted">Your entry code</p>
   <p class="code code-big"><?= e($player['entry_code']) ?></p>
   <p class="muted">
-    Screenshot this. You&rsquo;ll need it to open your sheet
-    <?= $open ? 'again before picks lock.' : 'later.' ?>
+    Screenshot this. You&rsquo;ll need it to open your sheet again
+    <?= $open ? 'to change your picks before they lock, and ' : '' ?>
+    to check off each session as you watch it.
   </p>
 </div>
 
