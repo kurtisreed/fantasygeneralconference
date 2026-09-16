@@ -14,6 +14,26 @@ $questions = get_questions($eventId);
 $possible = total_points_possible($questions);
 $error = null;
 
+// "Not you?" — same idea as admin/logout.php: drop the session and let the
+// next player use this device without an incognito window.
+if (isset($_GET['switch'])) {
+    unset($_SESSION['player_id']);
+    session_regenerate_id(true);
+    redirect('index.php');
+}
+
+// The session cookie is already what authorizes editing a sheet on play.php —
+// the entry code only exists to start that same session on a new device. A
+// returning player on the same phone shouldn't have to dig up the code at
+// all, so offer the shortcut straight from the session if we have one.
+$continuePlayer = null;
+if (!empty($_SESSION['player_id'])) {
+    $continuePlayer = q1(
+        'SELECT * FROM players WHERE id = ? AND event_id = ?',
+        [(int)$_SESSION['player_id'], $eventId]
+    );
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
 
@@ -78,6 +98,16 @@ page_head('Play');
 </section>
 
 <?php if ($error): ?><div class="error"><?= e($error) ?></div><?php endif; ?>
+
+<?php if ($continuePlayer): ?>
+  <section class="card continue-card">
+    <p class="continue-who">
+      Welcome back, <strong><?= e($continuePlayer['display_name']) ?></strong>.
+      <a class="link continue-switch" href="?switch=1">Not you?</a>
+    </p>
+    <a class="btn btn-primary" href="play.php">Continue to my sheet &rarr;</a>
+  </section>
+<?php endif; ?>
 
 <div class="trio">
 
