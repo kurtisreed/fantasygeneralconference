@@ -38,6 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             [$n, $checked ? implode(',', $checked) : null, $playerId]
         );
         recompute_event_scores($eventId);
+
+        // The card auto-saves via fetch on every checkbox toggle — no page
+        // reload, so no flash message and nothing to redirect to.
+        if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'fetch') {
+            http_response_code(204);
+            exit;
+        }
+
         flash('Sessions watched updated.');
         redirect('play.php');
     }
@@ -76,11 +84,8 @@ page_head('Your sheet');
     <h2>Sessions watched</h2>
     <span class="pill"><?= watched_per($questions) ?> pts each</span>
   </header>
-  <p class="muted">
-    Return here to check off each session as you watch it! It always works,
-    even after picks lock, since that's when conference actually happens.
-  </p>
-  <form method="post" class="stack">
+  <p class="muted">Return here to check off each session as you watch it!</p>
+  <form method="post" class="stack" id="watched-form">
     <?= csrf_field() ?>
     <input type="hidden" name="action" value="watched">
     <?php $watchedCodes = array_filter(explode(',', (string)($player['watched_sessions'] ?? ''))); ?>
@@ -93,7 +98,7 @@ page_head('Your sheet');
         </label>
       <?php endforeach; ?>
     </div>
-    <button type="submit" class="btn btn-primary">Save</button>
+    <p class="help" id="watched-status" aria-live="polite">&nbsp;</p>
   </form>
 </div>
 
@@ -112,6 +117,30 @@ page_head('Your sheet');
 <?php endif; ?>
 </form>
 
+<script>
+(function () {
+  'use strict';
+  var form = document.getElementById('watched-form');
+  var status = document.getElementById('watched-status');
+  if (!form || !status) return;
+
+  form.querySelectorAll('input[type="checkbox"]').forEach(function (box) {
+    box.addEventListener('change', function () {
+      status.textContent = 'Saving…';
+      fetch(location.href, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'X-Requested-With': 'fetch' },
+        credentials: 'same-origin'
+      }).then(function (r) {
+        status.textContent = r.ok ? 'Saved.' : 'Could not save — try again.';
+      }).catch(function () {
+        status.textContent = 'Could not save — try again.';
+      });
+    });
+  });
+})();
+</script>
 <script src="<?= e(asset_url('assets/app.js')) ?>"></script>
 <?php
 page_foot();
