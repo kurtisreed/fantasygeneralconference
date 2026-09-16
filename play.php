@@ -67,29 +67,14 @@ page_head('Your sheet');
   <?php endif; ?>
 </section>
 
-<form method="post" id="sheet" <?= $open ? '' : 'class="locked"' ?>>
-<?= csrf_field() ?>
-
-<?php render_sheet_sections($questions, $answers, $open, (int)$player['sessions_watched'], true); ?>
-
-<?php if ($open): ?>
-  <div class="submit-bar">
-    <span class="submit-count"><span id="answered">0</span> of <span id="total">0</span> answered</span>
-    <button type="submit" class="btn btn-primary">Save my picks</button>
-  </div>
-<?php else: ?>
-  <p class="center"><a class="link" href="leaderboard.php">See the standings &rarr;</a></p>
-<?php endif; ?>
-</form>
-
 <div class="card section" id="sec-watched-report">
   <header class="section-head">
     <h2>Sessions watched</h2>
     <span class="pill"><?= watched_per($questions) ?> pts each</span>
   </header>
   <p class="muted">
-    Check off every session you actually watched — this always works, even
-    after picks lock, since that's when conference actually happens.
+    Return here to check off each session as you watch it! It always works,
+    even after picks lock, since that's when conference actually happens.
   </p>
   <form method="post" class="stack">
     <?= csrf_field() ?>
@@ -107,6 +92,21 @@ page_head('Your sheet');
     <button type="submit" class="btn btn-primary">Save</button>
   </form>
 </div>
+
+<form method="post" id="sheet" <?= $open ? '' : 'class="locked"' ?>>
+<?= csrf_field() ?>
+
+<?php render_sheet_sections($questions, $answers, $open, (int)$player['sessions_watched'], true); ?>
+
+<?php if ($open): ?>
+  <div class="submit-bar">
+    <span class="submit-count"><span id="answered">0</span> of <span id="total">0</span> answered</span>
+    <button type="submit" class="btn btn-primary">Save my picks</button>
+  </div>
+<?php else: ?>
+  <p class="center"><a class="link" href="leaderboard.php">See the standings &rarr;</a></p>
+<?php endif; ?>
+</form>
 
 <script src="<?= e(asset_url('assets/app.js')) ?>"></script>
 <?php

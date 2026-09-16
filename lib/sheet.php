@@ -72,7 +72,7 @@ function render_sheet_sections(array $questions, array $answers, bool $editable,
                 <p class="help locked-note">
                   Currently recorded: <strong><?= $watched ?></strong>.
                   <?= $selfReported
-                      ? 'Update it in the Sessions watched card below.'
+                      ? 'Update it in the Sessions watched card at the top of the page.'
                       : 'The scorekeeper fills this in when the sheets are scored.' ?>
                 </p>
 
