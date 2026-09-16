@@ -117,7 +117,7 @@ page_head('Play');
   <?php if ($open && !$continuePlayer): ?>
   <section class="card choice">
     <h2>Make new picks!</h2>
-    <p class="muted">Make your picks before General Conference starts. Only one sheet person.</p>
+    <p class="muted">Make your picks before General Conference starts. Only one sheet per person.</p>
     <form method="post">
       <?= csrf_field() ?>
       <label for="display_name">Your name</label>
