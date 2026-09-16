@@ -29,6 +29,9 @@ foreach ($questions as $qq) {
     }
 }
 
+// Highlight the signed-in player's own row so they don't have to hunt for it.
+$myId = (int)($_SESSION['player_id'] ?? 0);
+
 $detailId = query_int('player');
 $detail = null;
 if ($detailId) {
@@ -89,8 +92,9 @@ page_head('Standings');
         $lastTotal = (int)$row['total'];
         // Only dress the top three once there is something to be on top of.
         $medal = ($anyPoints && $rank <= 3 && (int)$row['total'] > 0)
-            ? ' medal medal-' . $rank : ''; ?>
-      <li class="board-row<?= $rank === 1 ? ' leader' : '' ?><?= $medal ?>">
+            ? ' medal medal-' . $rank : '';
+        $mine = $myId && (int)$row['id'] === $myId; ?>
+      <li class="board-row<?= $rank === 1 ? ' leader' : '' ?><?= $medal ?><?= $mine ? ' you' : '' ?>">
         <span class="rank"><?= $rank ?></span>
         <a class="board-name" href="<?= e($selfQ) ?>player=<?= (int)$row['id'] ?>"><?= e($row['display_name']) ?></a>
         <span class="board-pts"><?= (int)$row['total'] ?></span>

@@ -9,6 +9,7 @@
   --accent: #5d7342;
   --accent-ink: #ffffff;
   --gold: #a8792c;
+  --gold-bg: #f6e9c8;
   --good: #4a6b3f;
   --good-bg: #e8efdd;
   --bad: #a1442c;
@@ -28,6 +29,7 @@
     --accent: #9ab377;
     --accent-ink: #1a1f12;
     --gold: #d8b25f;
+    --gold-bg: #3c3116;
     --good: #9ab377;
     --good-bg: #1f2717;
     --bad: #e2917a;
@@ -247,6 +249,10 @@ input.mini { width: 72px; padding: 6px 8px; }
   border-radius: var(--radius); padding: 12px 16px; margin-bottom: 8px;
 }
 .board-row.leader { border-color: var(--accent); border-width: 2px; }
+/* The signed-in player's own row, so they don't have to hunt for it in a
+   long list. Wins out over the leader/medal border since it's about "you",
+   not rank. */
+.board-row.you { background: var(--gold-bg); border-color: var(--gold); }
 .rank {
   flex: none; width: 26px; text-align: center; font-weight: 700;
   color: var(--ink-soft); font-variant-numeric: tabular-nums;
