@@ -19,12 +19,13 @@ foreach ($questions as $qq) {
     $byId[(int)$qq['id']] = $qq;
 }
 $results = get_results($eventId);
+$sessions = get_sessions($eventId);
 $possible = total_points_possible($questions);
 $board = leaderboard($eventId);
 
-$scoredPoints = 0;
+$scoredPoints = watched_points_scored_so_far($event, $sessions, $questions);
 foreach ($questions as $qq) {
-    if ($qq['type'] === 'watched' || isset($results[(int)$qq['id']])) {
+    if ($qq['type'] !== 'watched' && isset($results[(int)$qq['id']])) {
         $scoredPoints += (int)$qq['points'];
     }
 }

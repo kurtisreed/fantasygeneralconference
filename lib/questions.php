@@ -101,6 +101,35 @@ function watched_max(array $questions): int
     return 4;
 }
 
+/**
+ * How many "sessions watched" points are even possible yet. That question
+ * needs no admin result — it's self-reported — so without this, a session
+ * that hasn't happened yet would already count as "scored" on the standings
+ * page the moment the conference is created. General Conference always runs
+ * two sessions a day, Saturday and Sunday, at 10am and 2pm Mountain Time.
+ */
+function watched_points_scored_so_far(array $event, array $sessions, array $questions): int
+{
+    $per = watched_per($questions);
+    $max = watched_max($questions);
+    if (empty($event['starts_at']) || !$sessions) {
+        return $per * $max;
+    }
+
+    $saturday = strtotime((string)$event['starts_at']);
+    $now = time();
+    $started = 0;
+    foreach (array_values($sessions) as $i => $s) {
+        $day  = intdiv($i, 2);
+        $hour = $i % 2 === 0 ? 10 : 14;
+        $t = strtotime("+$day day +$hour hours", $saturday);
+        if ($t !== false && $t <= $now) {
+            $started++;
+        }
+    }
+    return min($started, $max) * $per;
+}
+
 function get_event_by_id(int $id): ?array
 {
     return q1('SELECT * FROM events WHERE id = ?', [$id]);
