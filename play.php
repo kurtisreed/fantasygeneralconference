@@ -23,14 +23,17 @@ $possible = total_points_possible($questions);
 $answers = get_answers($playerId);
 $sessions = get_sessions($eventId);
 $watchedMax = watched_max($questions);
+$futureCodes = future_session_codes($event, $sessions);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
 
     if (post('action') === 'watched') {
         // Self-reported, so it works any time — including after picks lock,
-        // which is when the sessions actually happen.
-        $validCodes = array_column($sessions, 'code');
+        // which is when the sessions actually happen. A session that hasn't
+        // started yet can't have been watched, so it's excluded here too,
+        // not just grayed out in the form below.
+        $validCodes = array_diff(array_column($sessions, 'code'), $futureCodes);
         $checked = array_values(array_intersect((array)($_POST['watched'] ?? []), $validCodes));
         $n = min($watchedMax, count($checked));
         exec_sql(
@@ -90,10 +93,12 @@ page_head('Your sheet');
     <input type="hidden" name="action" value="watched">
     <?php $watchedCodes = array_filter(explode(',', (string)($player['watched_sessions'] ?? ''))); ?>
     <div class="choices">
-      <?php foreach ($sessions as $s): ?>
-        <label class="chip">
+      <?php foreach ($sessions as $s):
+          $future = in_array($s['code'], $futureCodes, true); ?>
+        <label class="chip" <?= $future ? 'title="Not until this session starts"' : '' ?>>
           <input type="checkbox" name="watched[]" value="<?= e($s['code']) ?>"
-                 <?= in_array($s['code'], $watchedCodes, true) ? 'checked' : '' ?>>
+                 <?= in_array($s['code'], $watchedCodes, true) ? 'checked' : '' ?>
+                 <?= $future ? 'disabled' : '' ?>>
           <span><?= e($s['short_name']) ?></span>
         </label>
       <?php endforeach; ?>
