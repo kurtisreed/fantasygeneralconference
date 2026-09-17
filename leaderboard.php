@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/lib/bootstrap.php';
 require_once APP_ROOT . '/lib/questions.php';
 require_once APP_ROOT . '/lib/scoring.php';
+require_once APP_ROOT . '/lib/sheet.php';
 
 // ?event=<slug> shows a past conference; without it, the current one.
 $slug  = isset($_GET['event']) ? trim((string)$_GET['event']) : null;
@@ -20,6 +21,7 @@ foreach ($questions as $qq) {
 }
 $results = get_results($eventId);
 $sessions = get_sessions($eventId);
+$futureCodes = future_session_codes($event, $sessions);
 $possible = total_points_possible($questions);
 $board = leaderboard($eventId);
 
@@ -43,6 +45,18 @@ if ($detailId) {
 // to the current standings from a past one.
 $self = 'leaderboard.php' . ($isArchive ? '?event=' . rawurlencode((string)$slug) : '');
 $selfQ = 'leaderboard.php?' . ($isArchive ? 'event=' . rawurlencode((string)$slug) . '&' : '');
+
+// The "view my sheet" panel below offers the same self-report card play.php
+// has, so a player doesn't have to leave the standings to check a session
+// off. Always saves to the signed-in session's own row, regardless of which
+// player's row happens to be open in $_GET['player'].
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && post('action') === 'watched') {
+    csrf_check();
+    if (!$myId) {
+        redirect('index.php');
+    }
+    handle_watched_post($event, $sessions, $questions, $myId, $selfQ . 'player=' . $myId);
+}
 
 $pct = $possible > 0 ? (int)round($scoredPoints / $possible * 100) : 0;
 
@@ -106,13 +120,24 @@ page_head('Standings');
 
 <?php if ($detail):
     $answers = get_answers((int)$detail['id']);
-    $sections = group_by_section($questions); ?>
+    $sections = group_by_section($questions);
+    // Only the signed-in player's own row gets the editable card — everyone
+    // else's "sessions watched" stays a plain readout, same as any other pick.
+    $isMine = $myId && (int)$detail['id'] === $myId; ?>
   <section class="card">
     <header class="section-head">
       <h2><?= e($detail['display_name']) ?></h2>
       <a class="link" href="<?= e($self) ?>">close</a>
     </header>
-    <?php foreach ($sections as $key => $qs): ?>
+
+    <?php if ($isMine): ?>
+      <?php render_watched_card($detail, $sessions, $questions, $futureCodes); ?>
+    <?php endif; ?>
+
+    <?php foreach ($sections as $key => $qs):
+        if ($key === 'watched' && $isMine) {
+            continue; // covered by the card above
+        } ?>
       <h3 class="detail-head"><?= e(section_info($key)['title']) ?></h3>
       <table class="detail">
         <?php foreach ($qs as $qq):
@@ -137,6 +162,9 @@ page_head('Standings');
       </table>
     <?php endforeach; ?>
   </section>
+  <?php if ($isMine): ?>
+    <?php render_watched_autosave_script(); ?>
+  <?php endif; ?>
 <?php endif; ?>
 
 <p class="center"><a class="link" href="index.php">&larr; Back</a></p>
