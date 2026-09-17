@@ -37,9 +37,9 @@ date_default_timezone_set('America/Denver'); // conference runs on Mountain Time
 // PHP's own default server-side lifetime (24 minutes of inactivity) is far
 // shorter than the gap between conference sessions — so the "Welcome back"
 // shortcut on index.php would keep losing people between Saturday morning
-// and Saturday afternoon. Stretch both to cover the whole conference
-// weekend, with room to spare on either side.
-define('SESSION_LIFETIME_SECONDS', 7 * 86400);
+// and Saturday afternoon. Stretch both to cover two full weekends of room on
+// either side of conference, not just one.
+define('SESSION_LIFETIME_SECONDS', 14 * 86400);
 
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.gc_maxlifetime', (string)SESSION_LIFETIME_SECONDS);
