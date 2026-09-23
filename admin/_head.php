@@ -67,6 +67,7 @@ function admin_chrome(string $title, string $current = '', ?array $event = null)
         'harvest.php'    => 'Word counts',
         'questions.php'  => 'Questions',
         'event.php'      => 'Event',
+        'admins.php'     => 'Admins',
     ];
     echo '<nav class="adminnav">';
     foreach ($nav as $href => $label) {
