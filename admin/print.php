@@ -143,9 +143,11 @@ $siteUrl   = site_url('', '../');
   <?php endforeach; ?>
 
   <footer class="sheet-foot">
-    <div class="sheet-watched">
-      <span class="fill-label">Sessions watched (<?= watched_per($questions) ?> pts each)</span><span class="fill-line short"></span>
-    </div>
+    <p class="sheet-watched">
+      Be sure to go to <strong><?= e($siteUrl) ?></strong> to enter each conference
+      session as you watch it (<?= watched_per($questions) ?> pts each). Or feel free to just
+      text Bishop Reed or Porter with how many sessions you watched.
+    </p>
     <p class="sheet-slug"><?= e($event['slug']) ?></p>
   </footer>
 

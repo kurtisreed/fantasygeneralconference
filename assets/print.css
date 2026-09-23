@@ -102,10 +102,10 @@ body {
 /* ---------- footer ---------- */
 .sheet-foot {
   margin-top: 12px; padding-top: 7px; border-top: 2px solid #000;
-  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
 }
-.sheet-watched { display: flex; align-items: baseline; gap: 8px; flex: 1; }
-.sheet-slug { margin: 0; font-size: 7.5pt; color: #666; font-family: ui-monospace, Menlo, monospace; }
+.sheet-watched { margin: 0; font-size: 8pt; flex: 1; }
+.sheet-slug { margin: 0; font-size: 7.5pt; color: #666; font-family: ui-monospace, Menlo, monospace; flex: none; }
 
 /* The sheet is designed as two pages with the break here, rather than
    wherever the content happens to overflow. */
