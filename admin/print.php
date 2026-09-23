@@ -12,6 +12,7 @@ $questions = get_questions($eventId);
 $sections  = group_by_section($questions);
 $possible  = total_points_possible($questions);
 $copies    = max(1, min(30, query_int('copies', 1)));
+$siteUrl   = site_url('', '../');
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -62,7 +63,8 @@ $copies    = max(1, min(30, query_int('copies', 1)));
 
   <p class="sheet-intro">
     Fill in <strong>one box per row</strong>. Hand it back when you&rsquo;re done and
-    the scorekeeper will type it in.
+    the scorekeeper will type it in. Or play online, and check the leaderboard
+    any time during conference, at <strong><?= e($siteUrl) ?></strong>.
   </p>
 
   <?php
