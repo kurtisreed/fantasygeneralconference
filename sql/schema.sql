@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS players (
   id               INT AUTO_INCREMENT PRIMARY KEY,
   event_id         INT NOT NULL,
   display_name     VARCHAR(80) NOT NULL,
-  entry_code       CHAR(6) NOT NULL,
+  entry_code       CHAR(4) NOT NULL,
   sessions_watched TINYINT NOT NULL DEFAULT 0,
   watched_sessions VARCHAR(64) NULL,
   submitted_at     DATETIME NULL,

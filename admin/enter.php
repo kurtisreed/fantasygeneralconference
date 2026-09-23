@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 exec_sql(
                     'INSERT INTO players (event_id, display_name, entry_code) VALUES (?,?,?)',
-                    [$eventId, $name, make_entry_code()]
+                    [$eventId, $name, make_entry_code($eventId)]
                 );
                 redirect('enter.php?player=' . (int)db()->lastInsertId());
             }

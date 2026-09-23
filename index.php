@@ -27,7 +27,7 @@ if (isset($_GET['switch'])) {
 // this just skips the typing for anyone tapping a link from admin's share
 // button. Falls through to the ordinary error banner if the code is bad.
 if (isset($_GET['code']) && trim((string)$_GET['code']) !== '') {
-    $code = strtoupper(trim((string)$_GET['code']));
+    $code = trim((string)$_GET['code']);
     $player = q1('SELECT * FROM players WHERE event_id = ? AND entry_code = ?', [$eventId, $code]);
     if ($player) {
         $_SESSION['player_id'] = (int)$player['id'];
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
 
     if (post('action') === 'resume') {
-        $code = strtoupper((string)post('entry_code'));
+        $code = (string)post('entry_code');
         $player = q1('SELECT * FROM players WHERE event_id = ? AND entry_code = ?', [$eventId, $code]);
         if (!$player) {
             $error = 'No entry found with that code.';
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (q1('SELECT id FROM players WHERE event_id=? AND display_name=?', [$eventId, $name])) {
             $error = 'Someone already used that name — add a last initial.';
         } else {
-            $code = make_entry_code();
+            $code = make_entry_code($eventId);
             exec_sql(
                 'INSERT INTO players (event_id, display_name, entry_code) VALUES (?,?,?)',
                 [$eventId, $name, $code]
@@ -145,13 +145,13 @@ page_head('Play');
   <?php if (!$continuePlayer): ?>
   <section class="card choice">
     <h2>Already started?</h2>
-    <p class="muted">Enter the 6-character code to edit your picks. If you don't remember the code, text Bishop Reed or Porter, and they can get it for you.</p>
+    <p class="muted">Enter your 4-digit code to edit your picks. If you don't remember the code, text Bishop Reed or Porter, and they can get it for you.</p>
     <form method="post">
       <?= csrf_field() ?>
       <input type="hidden" name="action" value="resume">
       <label for="entry_code">Entry code</label>
-      <input type="text" id="entry_code" name="entry_code" maxlength="6"
-             class="code-input" autocapitalize="characters" autocomplete="off" required>
+      <input type="text" id="entry_code" name="entry_code" maxlength="4"
+             class="code-input" inputmode="numeric" pattern="[0-9]*" autocomplete="off" required>
       <button type="submit" class="btn">Open my sheet</button>
     </form>
   </section>

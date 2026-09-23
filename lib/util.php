@@ -17,15 +17,21 @@ function normalize_text(string $s): string
     return trim($s);
 }
 
-/** Random human-friendly entry code (no ambiguous characters). */
-function make_entry_code(int $len = 6): string
+/**
+ * Random numeric entry code, easy to type or read aloud over a phone. Only
+ * 10,000 possible 4-digit codes exist, unlike the old 6-character alphabet's
+ * ~1.3 billion, so this checks the event for a free one instead of trusting
+ * a fresh random draw not to collide.
+ */
+function make_entry_code(int $eventId, int $len = 4): string
 {
-    $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    $out = '';
-    for ($i = 0; $i < $len; $i++) {
-        $out .= $alphabet[random_int(0, strlen($alphabet) - 1)];
-    }
-    return $out;
+    do {
+        $code = '';
+        for ($i = 0; $i < $len; $i++) {
+            $code .= (string)random_int(0, 9);
+        }
+    } while (q1('SELECT id FROM players WHERE event_id = ? AND entry_code = ?', [$eventId, $code]));
+    return $code;
 }
 
 function redirect(string $url): never

@@ -127,7 +127,7 @@ input.mini { width: 72px; padding: 6px 8px; }
 .inline .muted { margin: 0; }
 
 .code-input {
-  text-transform: uppercase; letter-spacing: .3em;
+  letter-spacing: .3em;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   text-align: center; font-size: 20px;
 }
