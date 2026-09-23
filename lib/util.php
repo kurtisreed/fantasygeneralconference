@@ -68,3 +68,19 @@ function query_int(string $key, int $default = 0): int
 {
     return isset($_GET[$key]) ? (int)$_GET[$key] : $default;
 }
+
+/**
+ * Absolute URL to a path at the site root — for a link meant to work outside
+ * the browser (a share sheet, a text message), where a relative link makes
+ * no sense. $prefix is the same one page_head()/asset_url() take: '' from a
+ * top-level page, '../' from anything under admin/.
+ */
+function site_url(string $path, string $prefix = ''): string
+{
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $dir = rtrim(dirname((string)($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+    if ($prefix !== '') {
+        $dir = rtrim(dirname($dir), '/');
+    }
+    return $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? '') . $dir . '/' . ltrim($path, '/');
+}

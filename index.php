@@ -22,6 +22,20 @@ if (isset($_GET['switch'])) {
     redirect('index.php');
 }
 
+// A shared link (?code=XXXXXX) does the same thing as typing the code into
+// "Already started?" below — the code is already the credential either way,
+// this just skips the typing for anyone tapping a link from admin's share
+// button. Falls through to the ordinary error banner if the code is bad.
+if (isset($_GET['code']) && trim((string)$_GET['code']) !== '') {
+    $code = strtoupper(trim((string)$_GET['code']));
+    $player = q1('SELECT * FROM players WHERE event_id = ? AND entry_code = ?', [$eventId, $code]);
+    if ($player) {
+        $_SESSION['player_id'] = (int)$player['id'];
+        redirect('play.php');
+    }
+    $error = 'No entry found with that code.';
+}
+
 // The session cookie is already what authorizes editing a sheet on play.php —
 // the entry code only exists to start that same session on a new device. A
 // returning player on the same phone shouldn't have to dig up the code at

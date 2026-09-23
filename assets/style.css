@@ -141,6 +141,7 @@ input.mini { width: 72px; padding: 6px 8px; }
 .btn:hover { border-color: var(--ink-soft); }
 .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .btn-danger  { background: var(--bad); color: #fff; border-color: var(--bad); }
+.btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 7px; }
 .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 16px 0; }
 .link { color: var(--accent); }
 

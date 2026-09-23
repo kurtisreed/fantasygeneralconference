@@ -46,6 +46,7 @@ $players = q(
       ORDER BY p.display_name',
     [$eventId]
 );
+$linkBase = site_url('index.php', '../') . '?code=';
 ?>
 <section class="hero compact">
   <h1>Players</h1>
@@ -60,7 +61,7 @@ $players = q(
 <div class="card">
   <table class="players">
     <thead>
-      <tr><th>Name</th><th>Code</th><th>Answered</th><th>Watched</th><th>Points</th><th></th></tr>
+      <tr><th>Name</th><th>Code</th><th>Answered</th><th>Watched</th><th>Points</th><th></th><th></th></tr>
     </thead>
     <tbody>
     <?php foreach ($players as $p): ?>
@@ -74,6 +75,11 @@ $players = q(
         </td>
         <td class="strong"><?= (int)$p['total'] ?></td>
         <td><a class="link" href="../leaderboard.php?player=<?= (int)$p['id'] ?>">sheet</a></td>
+        <td>
+          <button type="button" class="btn btn-sm share-link-btn"
+                  data-url="<?= e($linkBase . $p['entry_code']) ?>"
+                  data-name="<?= e($p['display_name']) ?>">Share link</button>
+        </td>
       </tr>
     <?php endforeach; ?>
     </tbody>
@@ -103,5 +109,29 @@ $players = q(
     <button type="submit" class="btn btn-danger">Delete</button>
   </form>
 </div>
-<?php endif;
+<?php endif; ?>
+
+<script>
+(function () {
+  'use strict';
+  document.querySelectorAll('.share-link-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var url = btn.dataset.url;
+      if (navigator.share) {
+        navigator.share({ title: 'Fantasy General Conference', text: btn.dataset.name + '’s sheet', url: url })
+          .catch(function () {});
+        return;
+      }
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(function () {
+          var was = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(function () { btn.textContent = was; }, 1500);
+        });
+      }
+    });
+  });
+})();
+</script>
+<?php
 page_foot();
