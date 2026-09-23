@@ -63,7 +63,7 @@ $siteUrl   = site_url('', '../');
 
   <p class="sheet-intro">
     Fill in <strong>one box per row</strong>. Hand it back when you&rsquo;re done and
-    the scorekeeper will type it in. Or play online, and check the leaderboard
+    the scorekeeper will type it in. Check the leaderboard
     any time during conference, at <strong><?= e($siteUrl) ?></strong>.
   </p>
 
