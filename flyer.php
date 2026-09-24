@@ -69,7 +69,7 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
   }
 
   .page {
-    max-width: 600px;
+    max-width: 760px;
     margin: 0 auto;
     padding: 32px 20px 56px;
   }
@@ -113,7 +113,7 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
   }
   .tagline {
     margin: 14px auto 0;
-    max-width: 40ch;
+    max-width: 52ch;
     font-size: 17px;
     color: var(--ink-soft);
   }
