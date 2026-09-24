@@ -214,7 +214,7 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
 
   <header class="intro">
     <h1>Fantasy General Conference</h1>
-    <p class="tagline">Make your predictions, then watch conference to see how you did.</p>
+    <p class="tagline">Bishop Reed invites all of the youth to play "Fantasy General Conference" while you watch this year. You get to guess who speaks when, what color ties the Prophet will wear, and how many times "covenant" is said. You even earn points for every session you watch (even if you don't watch the whole thing). Make your predictions, then watch conference to see how you did. Winners will earn prizes!</p>
   </header>
 
   <section class="block">
