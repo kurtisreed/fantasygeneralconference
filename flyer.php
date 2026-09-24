@@ -93,11 +93,15 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 1344 / 756;
+    /* 20% shorter than the painting's native 1344x756 — cropped mostly out
+       of the sky above and the empty grass below, so the shepherd's staff
+       and the sheep at the edges both stay comfortably in frame. */
+    aspect-ratio: 1344 / 604.8;
     object-fit: cover;
+    object-position: 50% 60%;
   }
   .credit {
-    margin: 0 0 30px;
+    margin: 0 0 18px;
     font-size: 12px;
     color: var(--ink-soft);
     text-align: right;
@@ -105,7 +109,7 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
   }
 
   /* ---------- intro ---------- */
-  .intro { text-align: center; margin-bottom: 38px; }
+  .intro { text-align: center; margin-bottom: 26px; }
   h1 {
     font-size: clamp(30px, 7vw, 42px);
     font-style: italic;
@@ -119,12 +123,12 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
   }
 
   /* ---------- sections ---------- */
-  .block { margin-bottom: 38px; }
+  .block { margin-bottom: 28px; }
   .block h2 {
     font-size: 23px;
     display: table;
-    margin: 0 auto 14px;
-    padding-bottom: 8px;
+    margin: 0 auto 12px;
+    padding-bottom: 7px;
     border-bottom: 3px solid var(--gold);
   }
   .block p { margin: 0 0 10px; }
@@ -170,8 +174,8 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
   /* ---------- closing ---------- */
   .closing {
     text-align: center;
-    margin-top: 46px;
-    padding-top: 26px;
+    margin-top: 30px;
+    padding-top: 20px;
     border-top: 1px solid var(--line);
   }
   .closing .site {
