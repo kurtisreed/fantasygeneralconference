@@ -195,7 +195,7 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
 
   <header class="intro">
     <h1>Fantasy General Conference</h1>
-    <p class="tagline">Bishop Reed invites all of the youth to play "Fantasy General Conference" while you watch this year. You get to guess who speaks when, what color ties the Prophet will wear, and how many times "covenant" is said. You even earn points for every session you watch (even if you don't watch the whole thing). Make your predictions, then watch conference to see how you did. Winners will earn prizes!</p>
+    <p class="tagline">Bishop Reed invites all of the youth to play "Fantasy General Conference" while you watch this year. You get to guess who speaks when, what color ties the Prophet will wear, and how many times "covenant" is said. You earn points for every session you watch (even if you don't watch the whole thing). Make your predictions, then watch conference to see how you did. Winners will earn prizes!</p>
   </header>
 
   <section class="block">
@@ -215,10 +215,10 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
 
   <section class="block">
     <h2>While you&rsquo;re watching</h2>
-    <p>Every session you actually watch earns points too &mdash; so keep going even after picks lock.</p>
+    <p>Every session you actually watch earns points too &mdash; so keep going even after picks lock. You can enter the sessions yourself on the website, or text them in.</p>
     <div class="way-grid">
       <div class="way">
-        <h3>No internet?</h3>
+        <h3>Old school</h3>
         <p>Just text <strong>Bishop Reed</strong> or <strong>Porter</strong> how many sessions you watched.</p>
       </div>
       <div class="way">
