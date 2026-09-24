@@ -74,6 +74,9 @@ function admin_chrome(string $title, string $current = '', ?array $event = null)
         $cls = $href === $current ? ' class="on"' : '';
         echo '<a' . $cls . ' href="' . e($href) . '">' . e($label) . '</a>';
     }
+    // Not an admin page — it's the public "how to play" flyer, meant to be
+    // shared. Opens in a new tab so pulling it up doesn't lose your place here.
+    echo '<a href="../flyer.php" target="_blank" rel="noopener">Flyer</a>';
     echo '<a class="right" href="logout.php">Sign out</a>';
     echo '</nav>';
 
