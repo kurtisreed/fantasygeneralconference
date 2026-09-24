@@ -117,7 +117,7 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
   }
   .tagline {
     margin: 14px auto 0;
-    max-width: 52ch;
+    max-width: 62ch;
     font-size: 17px;
     color: var(--ink-soft);
   }
@@ -133,6 +133,9 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
   }
   .block p { margin: 0 0 10px; }
   .block p:last-child { margin-bottom: 0; }
+  /* Direct children only — not .way p, which sits a level deeper inside the
+     card grids and should stay left-aligned for easy reading in a narrow card. */
+  .block > p { text-align: center; }
   .muted { color: var(--ink-soft); }
   strong { font-weight: 700; }
 
