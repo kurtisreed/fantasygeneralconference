@@ -136,7 +136,6 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
   /* Direct children only — not .way p, which sits a level deeper inside the
      card grids and should stay left-aligned for easy reading in a narrow card. */
   .block > p { text-align: center; }
-  .muted { color: var(--ink-soft); }
   strong { font-weight: 700; }
 
   /* ---------- two ways to play ---------- */
@@ -173,27 +172,6 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
 
   a { color: var(--accent); font-weight: 700; text-decoration: none; }
   a:hover { text-decoration: underline; }
-
-  /* ---------- closing ---------- */
-  .closing {
-    text-align: center;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid var(--line);
-  }
-  .closing .site {
-    margin: 0;
-    font-family: "Fraunces", ui-serif, Georgia, serif;
-    font-size: 26px;
-    font-weight: 600;
-  }
-  .closing .muted { margin: 8px 0 0; font-size: 14px; }
-  .closing .signoff {
-    margin: 18px 0 0;
-    font-size: 14px;
-    font-style: italic;
-    color: var(--ink-soft);
-  }
 
   @media (max-width: 420px) {
     .way { flex: 1 1 100%; }
@@ -259,12 +237,6 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
       get it for you.
     </p>
   </section>
-
-  <footer class="closing">
-    <p class="site"><a href="<?= e($siteUrl) ?>"><?= e($siteHost) ?></a></p>
-    <p class="muted">Questions? Text Bishop Reed or Porter.</p>
-    <p class="signoff">Good luck &mdash; and good listening!</p>
-  </footer>
 
 </div>
 </body>
