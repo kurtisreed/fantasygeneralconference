@@ -74,9 +74,11 @@ function admin_chrome(string $title, string $current = '', ?array $event = null)
         $cls = $href === $current ? ' class="on"' : '';
         echo '<a' . $cls . ' href="' . e($href) . '">' . e($label) . '</a>';
     }
-    // Not an admin page — it's the public "how to play" flyer, meant to be
-    // shared. Opens in a new tab so pulling it up doesn't lose your place here.
-    echo '<a href="../flyer.php" target="_blank" rel="noopener">Flyer</a>';
+    // The flyer as a single image, ready to text or email — not the flyer.php
+    // page itself, which is just what that image is rendered from. Regenerate
+    // assets/img/flyer.jpg by hand (headless-browser screenshot) whenever
+    // flyer.php's content changes; this link doesn't do that automatically.
+    echo '<a href="' . e(asset_url('assets/img/flyer.jpg', '../')) . '" download="fantasy-general-conference-flyer.jpg">Flyer</a>';
     echo '<a class="right" href="logout.php">Sign out</a>';
     echo '</nav>';
 
