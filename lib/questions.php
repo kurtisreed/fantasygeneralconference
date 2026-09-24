@@ -264,6 +264,58 @@ function entries_open(array $event): bool
     return true;
 }
 
+/**
+ * A player's own PHP session cookie ($_SESSION['player_id']) and the
+ * server-side file it points to are two different things. On some shared
+ * hosts the session save directory gets swept by a cron job on its own
+ * schedule — a few hours, sometimes — no matter what session.gc_maxlifetime
+ * this app asks for; the browser still holds a perfectly good cookie, but
+ * the file it names is just gone, so the visitor looks logged out anyway.
+ *
+ * This is a second, plain cookie that isn't PHP session state at all — just
+ * the player's own entry code, the same credential the ?code= link already
+ * uses — so a lost session can rebuild itself from a single lookup, same as
+ * if the player had typed the code in by hand.
+ */
+function remember_player_cookie(string $entryCode): void
+{
+    global $CONFIG;
+    setcookie('fgc_remember', $entryCode, [
+        'expires'  => time() + SESSION_LIFETIME_SECONDS,
+        'path'     => '/',
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'secure'   => (bool)($CONFIG['secure_cookies'] ?? false),
+    ]);
+}
+
+/** Clears the cookie above — pair with dropping $_SESSION['player_id'] on "Not you?". */
+function forget_player_cookie(): void
+{
+    setcookie('fgc_remember', '', ['expires' => time() - 3600, 'path' => '/']);
+}
+
+/**
+ * If the PHP session died early but the remember cookie survived, rebuild
+ * the session from it — same lookup the ?code= link and "Already started?"
+ * form already do. Call this before anything reads $_SESSION['player_id'].
+ */
+function resume_remembered_player(int $eventId): void
+{
+    if (!empty($_SESSION['player_id'])) {
+        return;
+    }
+    $code = (string)($_COOKIE['fgc_remember'] ?? '');
+    if ($code === '') {
+        return;
+    }
+    $player = q1('SELECT id FROM players WHERE event_id = ? AND entry_code = ?', [$eventId, $code]);
+    if ($player) {
+        $_SESSION['player_id'] = (int)$player['id'];
+        remember_player_cookie($code); // sliding window: renews on every visit, not just the first
+    }
+}
+
 function get_answers(int $playerId): array
 {
     $out = [];

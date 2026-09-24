@@ -12,6 +12,7 @@ if (!$event) {
     exit('No conference found.');
 }
 $eventId    = (int)$event['id'];
+resume_remembered_player($eventId);
 $isArchive  = $slug !== null && $slug !== '';
 $manyEvents = event_count() > 1;
 $questions = get_questions($eventId);

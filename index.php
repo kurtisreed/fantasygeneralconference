@@ -18,9 +18,15 @@ $error = null;
 // next player use this device without an incognito window.
 if (isset($_GET['switch'])) {
     unset($_SESSION['player_id']);
+    forget_player_cookie();
     session_regenerate_id(true);
     redirect('index.php');
 }
+
+// The PHP session can die early on some hosts well before its cookie does —
+// see resume_remembered_player()'s own comment. Give it a chance to rebuild
+// itself before anything below reads $_SESSION['player_id'].
+resume_remembered_player($eventId);
 
 // A shared link (?code=XXXXXX) does the same thing as typing the code into
 // "Already started?" below — the code is already the credential either way,
@@ -31,6 +37,7 @@ if (isset($_GET['code']) && trim((string)$_GET['code']) !== '') {
     $player = q1('SELECT * FROM players WHERE event_id = ? AND entry_code = ?', [$eventId, $code]);
     if ($player) {
         $_SESSION['player_id'] = (int)$player['id'];
+        remember_player_cookie($code);
         redirect('play.php');
     }
     $error = 'No entry found with that code.';
@@ -58,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'No entry found with that code.';
         } else {
             $_SESSION['player_id'] = (int)$player['id'];
+            remember_player_cookie($code);
             redirect('play.php');
         }
     } else {
@@ -75,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 [$eventId, $name, $code]
             );
             $_SESSION['player_id'] = (int)db()->lastInsertId();
+            remember_player_cookie($code);
             redirect('play.php');
         }
     }

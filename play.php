@@ -10,6 +10,7 @@ if (!$event) {
     exit('No event set up yet.');
 }
 $eventId = (int)$event['id'];
+resume_remembered_player($eventId);
 
 $playerId = (int)($_SESSION['player_id'] ?? 0);
 $player = $playerId ? q1('SELECT * FROM players WHERE id = ? AND event_id = ?', [$playerId, $eventId]) : null;
