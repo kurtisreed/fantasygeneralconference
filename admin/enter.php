@@ -109,7 +109,11 @@ admin_chrome('Paper sheets', 'enter.php', $event);
     </div>
   <?php endif; ?>
 
-  <p class="center"><a class="link" href="print.php">Print blank sheets &rarr;</a></p>
+  <p class="center">
+    <a class="link" href="import.php">Import a file of sheets &rarr;</a>
+    &nbsp;&middot;&nbsp;
+    <a class="link" href="print.php">Print blank sheets &rarr;</a>
+  </p>
 
 <?php else:
     $questions = get_questions($eventId);
