@@ -9,6 +9,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (post('action') === 'delete') {
         exec_sql('DELETE FROM players WHERE id = ? AND event_id = ?', [(int)post('player_id'), $eventId]);
         flash('Entry deleted.');
+    } elseif (post('action') === 'rename') {
+        $pid  = (int)post('player_id');
+        $name = trim((string)post('display_name'));
+        $clash = q1(
+            'SELECT id FROM players WHERE event_id = ? AND display_name = ? AND id <> ?',
+            [$eventId, $name, $pid]
+        );
+        if (mb_strlen($name) < 2) {
+            flash('Enter a name at least 2 characters long.');
+        } elseif ($clash) {
+            flash('There is already an entry named "' . $name . '".');
+        } else {
+            exec_sql(
+                'UPDATE players SET display_name = ? WHERE id = ? AND event_id = ?',
+                [mb_substr($name, 0, 80), $pid, $eventId]
+            );
+            flash('Renamed to "' . $name . '".');
+        }
     } else {
         // Every row posts back on every save, whether or not the admin
         // touched it — only a real change should clear a player's own
@@ -96,6 +114,21 @@ $linkBase = site_url('index.php', '../') . '?code=';
 </form>
 
 <?php if ($players): ?>
+<div class="card">
+  <h2>Rename an entry</h2>
+  <form method="post" class="inline">
+    <?= csrf_field() ?>
+    <input type="hidden" name="action" value="rename">
+    <select name="player_id" aria-label="Entry to rename">
+      <?php foreach ($players as $p): ?>
+        <option value="<?= (int)$p['id'] ?>"><?= e($p['display_name']) ?></option>
+      <?php endforeach; ?>
+    </select>
+    <input type="text" name="display_name" maxlength="80" required placeholder="New name" aria-label="New name">
+    <button type="submit" class="btn">Rename</button>
+  </form>
+</div>
+
 <div class="card danger-zone">
   <h2>Remove an entry</h2>
   <form method="post" class="inline" onsubmit="return confirm('Delete this entry and all its picks? This cannot be undone.');">

@@ -152,7 +152,7 @@ admin_chrome('Import sheets', 'enter.php', $event);
     <div class="card">
       <h2><?= count($sheets) ?> sheets in this file</h2>
       <p class="muted">
-        Fix any names first — they can't be changed after import. Blank answers
+        Fix any names you can now (you can also rename later on the Players page). Blank answers
         were left blank or marked twice on paper; fill those in afterwards from
         <a class="link" href="enter.php">Paper sheets</a> if you can tell what was meant.
         Sessions watched isn't on the paper, so it starts at 0.
