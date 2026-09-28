@@ -77,6 +77,11 @@ admin_chrome('Paper sheets', 'enter.php', $event);
     </p>
   </section>
 
+  <div class="actions">
+    <a class="btn" href="import.php">Import a file of sheets</a>
+    <a class="btn" href="print.php">Print blank sheets</a>
+  </div>
+
   <div class="card">
     <h2>New paper sheet</h2>
     <form method="post" class="stack">
@@ -108,12 +113,6 @@ admin_chrome('Paper sheets', 'enter.php', $event);
       </table>
     </div>
   <?php endif; ?>
-
-  <p class="center">
-    <a class="link" href="import.php">Import a file of sheets &rarr;</a>
-    &nbsp;&middot;&nbsp;
-    <a class="link" href="print.php">Print blank sheets &rarr;</a>
-  </p>
 
 <?php else:
     $questions = get_questions($eventId);
