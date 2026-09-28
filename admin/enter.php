@@ -83,7 +83,7 @@ admin_chrome('Paper sheets', 'enter.php', $event);
   </div>
 
   <div class="card">
-    <h2>New paper sheet</h2>
+    <h2>Enter a new paper sheet</h2>
     <form method="post" class="stack">
       <?= csrf_field() ?>
       <input type="hidden" name="action" value="start">
