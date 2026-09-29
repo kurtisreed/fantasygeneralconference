@@ -19,7 +19,7 @@ require_once APP_ROOT . '/lib/auth.php';
  * sets it so a link to a particular conference works. It falls back to the
  * newest conference, which is the right answer almost every time.
  */
-function admin_guard(): array
+function admin_guard(bool $allowNoEvent = false): array
 {
     $admin = require_admin();
 
@@ -40,7 +40,12 @@ function admin_guard(): array
     $event ??= get_event();
 
     if (!$event) {
-        exit('No conference set up yet. Run tools/install.php.');
+        // A brand-new group has no conference yet. Only the pages that can
+        // cope with that (Conferences, Admins, Groups) get to run.
+        if (!$allowNoEvent) {
+            redirect('conferences.php');
+        }
+        return [$admin, null];
     }
     $_SESSION['admin_event_id'] = (int)$event['id'];
     return [$admin, $event];
@@ -69,6 +74,9 @@ function admin_chrome(string $title, string $current = '', ?array $event = null)
         'event.php'      => 'Event',
         'admins.php'     => 'Admins',
     ];
+    if (is_super_admin(admin_user())) {
+        $nav['groups.php'] = 'Groups';
+    }
     echo '<nav class="adminnav">';
     foreach ($nav as $href => $label) {
         $cls = $href === $current ? ' class="on"' : '';
@@ -78,7 +86,16 @@ function admin_chrome(string $title, string $current = '', ?array $event = null)
     // page itself, which is just what that image is rendered from. Regenerate
     // assets/img/flyer.jpg by hand (headless-browser screenshot) whenever
     // flyer.php's content changes; this link doesn't do that automatically.
-    echo '<a href="' . e(asset_url('assets/img/flyer.jpg', '../')) . '" download="fantasy-general-conference-flyer.jpg">Flyer</a>';
+    // Only the default group has a hand-made JPG; other groups get an
+    // assets/img/flyer-<slug>.jpg if someone makes one, else the live page.
+    $flyerFile = 'assets/img/flyer-' . current_org()['slug'] . '.jpg';
+    if (is_file(APP_ROOT . '/' . $flyerFile)) {
+        echo '<a href="' . e(asset_url($flyerFile, '../')) . '" download="flyer.jpg">Flyer</a>';
+    } elseif (current_org()['slug'] === ($GLOBALS['CONFIG']['default_group'] ?? 'default')) {
+        echo '<a href="' . e(asset_url('assets/img/flyer.jpg', '../')) . '" download="fantasy-general-conference-flyer.jpg">Flyer</a>';
+    } else {
+        echo '<a href="../flyer.php">Flyer</a>';
+    }
     echo '<a class="right" href="logout.php">Sign out</a>';
     echo '</nav>';
 

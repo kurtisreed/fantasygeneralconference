@@ -151,7 +151,7 @@ $linkBase = site_url('index.php', '../') . '?code=';
     btn.addEventListener('click', function () {
       var url = btn.dataset.url;
       if (navigator.share) {
-        navigator.share({ title: 'Fantasy General Conference', text: btn.dataset.name + '’s sheet', url: url })
+        navigator.share({ title: <?= json_encode(current_org()['name']) ?>, text: btn.dataset.name + '’s sheet', url: url })
           .catch(function () {});
         return;
       }

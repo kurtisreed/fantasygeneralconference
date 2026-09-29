@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/_head.php';
-[$admin, $event] = admin_guard();
+[$admin, $event] = admin_guard(true);
 
 $error = null;
 
@@ -15,7 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // rule: do it from another account instead.
             $error = "You can't remove your own account while signed in as it — sign in as another admin first.";
         } else {
-            $removed = exec_sql('DELETE FROM admins WHERE id = ?', [$id]);
+            $removed = exec_sql(
+                'DELETE FROM admins WHERE id = ? AND (org_id = ?' . (is_super_admin($admin) ? ' OR org_id IS NULL' : '') . ')',
+                [$id, current_org_id()]
+            );
             flash($removed ? 'Admin account removed.' : 'That admin was already gone.');
             redirect('admins.php');
         }
@@ -30,9 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (q1('SELECT id FROM admins WHERE username = ?', [$username])) {
             $error = 'That username is already taken.';
         } else {
+            $makeSuper = is_super_admin($admin) && post('super');
             exec_sql(
-                'INSERT INTO admins (username, password_hash) VALUES (?,?)',
-                [$username, password_hash($password, PASSWORD_DEFAULT)]
+                'INSERT INTO admins (username, password_hash, org_id) VALUES (?,?,?)',
+                [$username, password_hash($password, PASSWORD_DEFAULT), $makeSuper ? null : current_org_id()]
             );
             flash('Admin account "' . $username . '" created.');
             redirect('admins.php');
@@ -42,13 +46,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 admin_chrome('Admins', 'admins.php', $event);
 
-$admins = q('SELECT id, username, created_at FROM admins ORDER BY created_at, id');
+$admins = q(
+    'SELECT id, username, org_id, created_at FROM admins WHERE org_id = ?'
+    . (is_super_admin($admin) ? ' OR org_id IS NULL' : '') . ' ORDER BY created_at, id',
+    [current_org_id()]
+);
 $others = array_filter($admins, static fn($a) => (int)$a['id'] !== (int)$admin['id']);
 ?>
 <section class="hero compact">
   <h1>Admins</h1>
   <p class="lede">
-    Anyone with an account here can enter results, edit players, and everything
+    Anyone with an account for <?= e(current_org()['name']) ?> can enter results, edit players, and everything
     else in this nav &mdash; there's no separate read-only role.
   </p>
 </section>
@@ -66,6 +74,9 @@ $others = array_filter($admins, static fn($a) => (int)$a['id'] !== (int)$admin['
             <?php if ((int)$a['id'] === (int)$admin['id']): ?>
               <span class="muted">(you)</span>
             <?php endif; ?>
+            <?php if ($a['org_id'] === null): ?>
+              <span class="muted">(super-admin: every group)</span>
+            <?php endif; ?>
           </td>
           <td><?= e(date('M j, Y', strtotime((string)$a['created_at']))) ?></td>
         </tr>
@@ -82,6 +93,9 @@ $others = array_filter($admins, static fn($a) => (int)$a['id'] !== (int)$admin['
     <input type="text" id="username" name="username" maxlength="64" autocomplete="off" required>
     <label for="password">Password</label>
     <input type="password" id="password" name="password" minlength="8" autocomplete="new-password" required>
+    <?php if (is_super_admin($admin)): ?>
+      <label><input type="checkbox" name="super" value="1"> Super-admin (can sign in to every group and manage groups)</label>
+    <?php endif; ?>
     <button type="submit" class="btn btn-primary">Add admin</button>
   </form>
 </div>

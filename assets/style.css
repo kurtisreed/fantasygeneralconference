@@ -54,6 +54,7 @@ body {
 /* ---------- header ---------- */
 .site-header { padding: 24px 16px 8px; text-align: center; }
 .wordmark { text-decoration: none; color: inherit; display: inline-block; }
+.wordmark-logo { display: block; max-height: 56px; max-width: 200px; margin: 0 auto 6px; }
 .wordmark-small {
   display: block; font-size: 12px; letter-spacing: .22em;
   text-transform: uppercase; color: var(--ink-soft);

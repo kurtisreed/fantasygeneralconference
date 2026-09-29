@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/_head.php';
 require_once APP_ROOT . '/lib/seed.php';
-[$admin, $event] = admin_guard();
+[$admin, $event] = admin_guard(true);
 
 $error = null;
 
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Give the conference a name.';
         } elseif (!preg_match('/^[a-z0-9-]{3,64}$/', $slug)) {
             $error = 'The short name can only use lowercase letters, numbers and dashes.';
-        } elseif (q1('SELECT id FROM events WHERE slug = ?', [$slug])) {
+        } elseif (q1('SELECT id FROM events WHERE org_id = ? AND slug = ?', [current_org_id(), $slug])) {
             $error = 'There is already a conference with that short name.';
         } elseif (!$date || !strtotime($date)) {
             $error = 'Pick the Saturday the conference starts.';
@@ -46,14 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $events  = get_events();
-$current = (int)$event['id'];
+$current = $event ? (int)$event['id'] : 0;
 $newest  = get_event();
 
 // Prefill with the next conference after the most recent one we already have.
 $latestDate = $events[0]['starts_at'] ?? date('Y-m-d');
 $suggest    = next_conference_after($latestDate);
 
-admin_chrome('Conferences', '');
+admin_chrome('Conferences', '', $event);
 ?>
 <?php if ($error): ?><div class="error"><?= e($error) ?></div><?php endif; ?>
 <section class="hero compact">

@@ -51,7 +51,7 @@ if ($lock !== null && !strtotime($lock)) {
     exit("Could not read --lock as a date/time.\n");
 }
 
-$existing = q1('SELECT * FROM events WHERE slug = ?', [$slug]);
+$existing = q1('SELECT * FROM events WHERE org_id = ? AND slug = ?', [current_org_id(), $slug]);
 $eventId  = fgc_seed($slug, $name);
 
 $lockAt = $lock !== null

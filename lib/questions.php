@@ -49,14 +49,15 @@ const EVENT_ORDER = 'COALESCE(starts_at, DATE(lock_at), DATE(created_at)) DESC, 
 function get_event(?string $slug = null): ?array
 {
     if ($slug !== null) {
-        return q1('SELECT * FROM events WHERE slug = ?', [$slug]);
+        return q1('SELECT * FROM events WHERE org_id = ? AND slug = ?', [current_org_id(), $slug]);
     }
     // Latest by date, not by insertion order — a past conference backfilled
     // today must not become "current". Drafts are skipped so that setting up
     // the next conference early cannot hide the one people are still playing;
     // the fallback keeps a fresh install (everything still draft) working.
-    return q1('SELECT * FROM events WHERE status <> "draft" ORDER BY ' . EVENT_ORDER . ' LIMIT 1')
-        ?? q1('SELECT * FROM events ORDER BY ' . EVENT_ORDER . ' LIMIT 1');
+    $org = current_org_id();
+    return q1('SELECT * FROM events WHERE org_id = ? AND status <> "draft" ORDER BY ' . EVENT_ORDER . ' LIMIT 1', [$org])
+        ?? q1('SELECT * FROM events WHERE org_id = ? ORDER BY ' . EVENT_ORDER . ' LIMIT 1', [$org]);
 }
 
 /**
@@ -161,7 +162,7 @@ function future_session_codes(array $event, array $sessions): array
 
 function get_event_by_id(int $id): ?array
 {
-    return q1('SELECT * FROM events WHERE id = ?', [$id]);
+    return q1('SELECT * FROM events WHERE id = ? AND org_id = ?', [$id, current_org_id()]);
 }
 
 /** Every conference, newest first, with enough counts to summarise each one. */
@@ -177,13 +178,15 @@ function get_events(): array
                    JOIN questions q3 ON q3.id = r.question_id
                   WHERE q3.event_id = e.id) AS result_count
            FROM events e
-          ORDER BY COALESCE(e.starts_at, DATE(e.lock_at), DATE(e.created_at)) DESC, e.id DESC'
+          WHERE e.org_id = ?
+          ORDER BY COALESCE(e.starts_at, DATE(e.lock_at), DATE(e.created_at)) DESC, e.id DESC',
+        [current_org_id()]
     );
 }
 
 function event_count(): int
 {
-    return (int)q1('SELECT COUNT(*) AS c FROM events')['c'];
+    return (int)q1('SELECT COUNT(*) AS c FROM events WHERE org_id = ?', [current_org_id()])['c'];
 }
 
 /** True once a conference has something worth showing on a standings page. */

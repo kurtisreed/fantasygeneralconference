@@ -129,9 +129,10 @@ function fgc_ensure_speakers(int $eventId): array
         'SELECT s.event_id FROM speakers s
            JOIN events e ON e.id = s.event_id
           WHERE e.id <> ?
+            AND e.org_id = (SELECT org_id FROM events WHERE id = ?)
           ORDER BY COALESCE(e.starts_at, DATE(e.lock_at), DATE(e.created_at)) DESC, e.id DESC
           LIMIT 1',
-        [$eventId]
+        [$eventId, $eventId]
     );
 
     $source = [];
@@ -273,11 +274,11 @@ function fgc_seed(string $slug = 'october-2026', string $name = 'October 2026 Ge
     $pdo->beginTransaction();
 
     exec_sql(
-        'INSERT INTO events (slug, name, status) VALUES (?, ?, "draft")
+        'INSERT INTO events (org_id, slug, name, status) VALUES (?, ?, ?, "draft")
          ON DUPLICATE KEY UPDATE name = VALUES(name)',
-        [$slug, $name]
+        [current_org_id(), $slug, $name]
     );
-    $eventId = (int)q1('SELECT id FROM events WHERE slug = ?', [$slug])['id'];
+    $eventId = (int)q1('SELECT id FROM events WHERE org_id = ? AND slug = ?', [current_org_id(), $slug])['id'];
 
     // ---- sessions ----
     $sessionIds = [];

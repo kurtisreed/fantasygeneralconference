@@ -17,6 +17,11 @@ return [
     // Shown in the page header.
     'site_name' => 'Fantasy General Conference',
 
+    // Each group is served at <slug>.<base_domain>; the bare domain serves the
+    // default group (the slug below). Leave base_domain out for one-group use.
+    'base_domain'   => 'localhost',
+    'default_group' => 'default',
+
     // Set true on shared hosting so cookies are HTTPS-only.
     'secure_cookies' => false,
 

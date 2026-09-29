@@ -5,7 +5,7 @@ require_once APP_ROOT . '/lib/questions.php';
 
 $event = get_event();
 $playerId = (int)($_SESSION['player_id'] ?? 0);
-$player = $playerId ? q1('SELECT * FROM players WHERE id = ?', [$playerId]) : null;
+$player = $playerId ? q1('SELECT * FROM players WHERE id = ? AND event_id = ?', [$playerId, $event['id'] ?? 0]) : null;
 if (!$event || !$player) {
     redirect('index.php');
 }

@@ -7,7 +7,19 @@ function admin_user(): ?array
     if (!$id) {
         return null;
     }
-    return q1('SELECT id, username FROM admins WHERE id = ?', [(int)$id]);
+    $u = q1('SELECT id, username, org_id FROM admins WHERE id = ?', [(int)$id]);
+    return $u && admin_may_use_org($u) ? $u : null;
+}
+
+/** A group admin works in their own group only; a super-admin (org_id NULL) in any. */
+function admin_may_use_org(array $admin): bool
+{
+    return $admin['org_id'] === null || (int)$admin['org_id'] === current_org_id();
+}
+
+function is_super_admin(?array $admin): bool
+{
+    return $admin !== null && $admin['org_id'] === null;
 }
 
 function require_admin(): array
@@ -23,7 +35,7 @@ function require_admin(): array
 function admin_login(string $username, string $password): bool
 {
     $row = q1('SELECT * FROM admins WHERE username = ?', [$username]);
-    if (!$row || !password_verify($password, $row['password_hash'])) {
+    if (!$row || !admin_may_use_org($row) || !password_verify($password, $row['password_hash'])) {
         return false;
     }
     session_regenerate_id(true);
@@ -79,8 +91,8 @@ function resume_remembered_admin(): void
         return;
     }
     [$id, $token] = explode(':', $raw, 2);
-    $row = q1('SELECT id, remember_token_hash FROM admins WHERE id = ?', [(int)$id]);
-    if (!$row || !$row['remember_token_hash'] || !hash_equals($row['remember_token_hash'], hash('sha256', $token))) {
+    $row = q1('SELECT id, org_id, remember_token_hash FROM admins WHERE id = ?', [(int)$id]);
+    if (!$row || !admin_may_use_org($row) || !$row['remember_token_hash'] || !hash_equals($row['remember_token_hash'], hash('sha256', $token))) {
         return;
     }
     session_regenerate_id(true);

@@ -62,5 +62,6 @@ if (PHP_SAPI !== 'cli' && !headers_sent()) {
 
 require_once APP_ROOT . '/lib/util.php';
 require_once APP_ROOT . '/lib/db.php';
+require_once APP_ROOT . '/lib/org.php';
 require_once APP_ROOT . '/lib/csrf.php';
 require_once APP_ROOT . '/lib/layout.php';

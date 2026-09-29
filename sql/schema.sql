@@ -3,15 +3,32 @@
 
 SET NAMES utf8mb4;
 
+-- One row per independent group running its own conferences. A group is
+-- reached at <slug>.<base_domain>; the bare domain serves the default group.
+-- (Named orgs because GROUPS is a reserved word in MySQL 8.)
+CREATE TABLE IF NOT EXISTS orgs (
+  id            INT AUTO_INCREMENT PRIMARY KEY,
+  slug          VARCHAR(40)  NOT NULL,
+  name          VARCHAR(120) NOT NULL,
+  leader_name   VARCHAR(80)  NOT NULL DEFAULT '',
+  contact_line  VARCHAR(160) NOT NULL DEFAULT '',
+  accent_color  CHAR(7)      NULL,
+  logo_path     VARCHAR(120) NULL,
+  created_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_org_slug (slug)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS events (
   id          INT AUTO_INCREMENT PRIMARY KEY,
+  org_id      INT          NOT NULL,
   slug        VARCHAR(64)  NOT NULL,
   name        VARCHAR(160) NOT NULL,
   starts_at   DATE         NULL,
   lock_at     DATETIME     NULL,
   status      ENUM('draft','open','locked','final') NOT NULL DEFAULT 'draft',
   created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_event_slug (slug)
+  UNIQUE KEY uq_event_slug (org_id, slug),
+  CONSTRAINT fk_event_org FOREIGN KEY (org_id) REFERENCES orgs(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS sessions (
@@ -103,8 +120,10 @@ CREATE TABLE IF NOT EXISTS admins (
   username            VARCHAR(64) NOT NULL,
   password_hash       VARCHAR(255) NOT NULL,
   remember_token_hash CHAR(64) NULL,
+  org_id              INT NULL,   -- NULL = super-admin (all groups); otherwise that group only
   created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_admin (username)
+  UNIQUE KEY uq_admin (username),
+  CONSTRAINT fk_admin_org FOREIGN KEY (org_id) REFERENCES orgs(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- The speaking leaders for a conference. Kept per conference so a past one

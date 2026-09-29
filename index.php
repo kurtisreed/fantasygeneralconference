@@ -6,7 +6,7 @@ require_once APP_ROOT . '/lib/scoring.php';
 
 $event = get_event();
 if (!$event) {
-    exit('No event set up yet. Run tools/install.php first.');
+    exit('No conference is open yet — check back soon.');
 }
 $eventId = (int)$event['id'];
 $open = entries_open($event);
@@ -154,7 +154,7 @@ page_head('Play');
   <?php if (!$continuePlayer): ?>
   <section class="card choice">
     <h2>Already started?</h2>
-    <p class="muted">Enter your 4-digit code to edit your picks. If you don't remember the code, text Bishop Reed or Porter, and they can get it for you.</p>
+    <p class="muted">Enter your 4-digit code to edit your picks. If you don't remember the code, text <?= e(current_org()['contact_line'] ?: 'your leader') ?>, and they can get it for you.</p>
     <form method="post">
       <?= csrf_field() ?>
       <input type="hidden" name="action" value="resume">

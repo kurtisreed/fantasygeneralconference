@@ -40,6 +40,7 @@ foreach (array_filter(array_map('trim', explode(';', $sql))) as $stmt) {
 say('Schema applied.');
 
 // ---- 2. seed ----
+ensure_default_org();
 $eventId = fgc_seed();
 $total = (int)q1('SELECT COALESCE(SUM(points),0) AS t FROM questions WHERE event_id=? AND active=1', [$eventId])['t'];
 $count = (int)q1('SELECT COUNT(*) AS c FROM questions WHERE event_id=? AND active=1', [$eventId])['c'];

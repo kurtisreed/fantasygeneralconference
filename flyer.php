@@ -13,7 +13,7 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fantasy General Conference</title>
+<title><?= e(current_org()['name']) ?></title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&display=swap">
@@ -194,8 +194,8 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
   <p class="credit">&ldquo;Shall Not Want&rdquo; by Yongsung Kim</p>
 
   <header class="intro">
-    <h1>Fantasy General Conference</h1>
-    <p class="tagline">Bishop Reed invites all of the youth to play "Fantasy General Conference" while you watch this year. You get to guess who speaks when, what color ties the Prophet will wear, and how many times "covenant" is said. You earn points for every session you watch (even if you don't watch the whole thing). Make your predictions, then watch conference to see how you did. Winners will earn prizes!</p>
+    <h1><?= e(current_org()['name']) ?></h1>
+    <p class="tagline"><?= current_org()['leader_name'] !== '' ? e(current_org()['leader_name']) . ' invites' : 'Your leaders invite' ?> all of the youth to play "<?= e(current_org()['name']) ?>" while you watch this year. You get to guess who speaks when, what color ties the Prophet will wear, and how many times "covenant" is said. You earn points for every session you watch (even if you don't watch the whole thing). Make your predictions, then watch conference to see how you did. Winners will earn prizes!</p>
   </header>
 
   <section class="block">
@@ -219,7 +219,7 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
     <div class="way-grid">
       <div class="way">
         <h3>Old school</h3>
-        <p>Just text <strong>Bishop Reed</strong> or <strong>Porter</strong> how many sessions you watched.</p>
+        <p>Just text <strong><?= e(current_org()['contact_line'] ?: 'your leader') ?></strong> how many sessions you watched.</p>
       </div>
       <div class="way">
         <h3>Online</h3>
@@ -233,7 +233,7 @@ $siteHost = preg_replace('#^https?://#', '', rtrim($siteUrl, '/'));
     <p>
       Want to remember your picks? Curious who&rsquo;s ahead? Visit <?= e($siteHost) ?>
       any time during conference &mdash; even between sessions &mdash; to watch the
-      leaderboard update. If you need your access code, Porter or Bishop Reed can
+      leaderboard update. If you need your access code, <?= e(current_org()['contact_line'] ?: 'your leader') ?> can
       get it for you.
     </p>
   </section>

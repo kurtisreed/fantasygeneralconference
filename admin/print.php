@@ -47,7 +47,7 @@ $siteUrl   = site_url('', '../');
 
   <header class="sheet-head">
     <div>
-      <p class="sheet-kicker">Fantasy General Conference</p>
+      <p class="sheet-kicker"><?= e(current_org()['name']) ?></p>
       <h1><?= e($event['name']) ?></h1>
     </div>
     <div class="sheet-score">
@@ -146,7 +146,7 @@ $siteUrl   = site_url('', '../');
     <p class="sheet-watched">
       Be sure to go to <strong><?= e($siteUrl) ?></strong> to enter each conference
       session as you watch it (<?= watched_per($questions) ?> pts each). Or feel free to just
-      text Bishop Reed or Porter with how many sessions you watched.
+      text <?= e(current_org()['contact_line'] ?: 'your leader') ?> with how many sessions you watched.
     </p>
     <p class="sheet-slug"><?= e($event['slug']) ?></p>
   </footer>
