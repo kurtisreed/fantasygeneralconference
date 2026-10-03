@@ -10,6 +10,9 @@ if (!$event) {
 }
 $eventId = (int)$event['id'];
 $open = entries_open($event);
+// Text-only: picks are locked because conference has begun (not because it's still a draft).
+$started = in_array($event['status'], ['locked', 'final'], true)
+    || (!empty($event['lock_at']) && strtotime((string)$event['lock_at']) <= time());
 $questions = get_questions($eventId);
 $possible = total_points_possible($questions);
 $error = null;
@@ -129,7 +132,7 @@ page_head('Play');
         Welcome back, <strong><?= e($continuePlayer['display_name']) ?></strong>.
         <a class="link continue-switch" href="?switch=1">Not you?</a>
       </p>
-      <p class="muted continue-note">Click below to change your picks and check off which sessions you watched.</p>
+      <p class="muted continue-note">Click below to <?= $started ? 'see your picks and check off' : 'change your picks and check off' ?> which sessions you watched.</p>
     </div>
     <a class="btn btn-primary" href="play.php">Continue to my sheet &rarr;</a>
   </section>
@@ -154,7 +157,7 @@ page_head('Play');
   <?php if (!$continuePlayer): ?>
   <section class="card choice">
     <h2>Already started?</h2>
-    <p class="muted">Enter your 4-digit code to edit your picks. If you don't remember the code, text <?= e(current_org()['contact_line'] ?: 'your leader') ?>, and they can get it for you.</p>
+    <p class="muted">Enter your 4-digit code to <?= $started ? 'see your picks and enter the sessions you watch' : 'edit your picks' ?>. If you don't remember the code, text <?= e(current_org()['contact_line'] ?: 'your leader') ?>, and they can get it for you.</p>
     <form method="post">
       <?= csrf_field() ?>
       <input type="hidden" name="action" value="resume">

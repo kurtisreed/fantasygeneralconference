@@ -59,7 +59,7 @@ page_head('Your sheet');
     <strong class="code"><?= e($player['entry_code']) ?></strong> &mdash; write it down.
   </p>
   <?php if (!$open): ?>
-    <p class="notice">Picks are locked. You can look, but you can&rsquo;t change anything.</p>
+    <p class="notice">Picks are locked. You can&rsquo;t change your picks, but don&rsquo;t forget to enter the sessions that you watch!</p>
   <?php endif; ?>
 </section>
 
