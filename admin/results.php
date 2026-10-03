@@ -79,15 +79,18 @@ $sections = group_by_section($questions);
         $answeredBy = (int)q1('SELECT COUNT(*) c FROM answers WHERE question_id = ?', [$qid])['c'];
         // A speaker can talk in more than one session, so the apostles grid
         // takes any number of checked sessions instead of one dropdown pick.
-        $multiSession = $qq['type'] === 'pick_one' && $key === 'apostles'; ?>
+        // The colors section works the same way: a tie or dress can show more
+        // than one color, and a player scores if they picked any checked one.
+        $multiSession = $qq['type'] === 'pick_one' && in_array($key, ['apostles', 'colors'], true); ?>
       <div class="q q-admin">
         <<?= $multiSession ? 'p' : 'label' ?> class="q-prompt"<?= $multiSession ? '' : ' for="r' . $qid . '"' ?>>
-          <?= e($multiSession ? 'Which session(s) did ' . $qq['prompt'] . ' speak in?' : $qq['prompt']) ?>
+          <?= e($multiSession && $key === 'apostles' ? 'Which session(s) did ' . $qq['prompt'] . ' speak in?' : $qq['prompt']) ?>
           <span class="q-pts"><?= (int)$qq['points'] ?> pt<?= $qq['points'] == 1 ? '' : 's' ?> · <?= $answeredBy ?> picked</span>
         </<?= $multiSession ? 'p' : 'label' ?>>
 
         <?php if ($multiSession): ?>
           <?php $curVals = $cur !== '' ? explode(',', $cur) : []; ?>
+          <?php if ($key === 'colors'): ?><p class="muted">Check every color that counts &mdash; picking any of them scores.</p><?php endif; ?>
           <div class="choices">
             <?php foreach ($qq['options'] as $o): ?>
               <label class="chip">
