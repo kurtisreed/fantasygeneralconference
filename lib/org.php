@@ -91,3 +91,27 @@ function wordmark_parts(string $name): array
     }
     return ['', $name];
 }
+
+/** This group's plain-text message for the main page and standings, if it has one. */
+function org_announcement(): void
+{
+    $text = trim((string)(current_org()['announcement'] ?? ''));
+    if ($text !== '') {
+        // Escape everything first, then turn bare web addresses into links, so
+        // nothing typed in the box can inject markup of its own.
+        $html = preg_replace_callback(
+            '~https?://[^\s<]+~i',
+            static function (array $m): string {
+                $url   = $m[0];
+                $trail = '';
+                while ($url !== '' && str_contains('.,;:!?)', substr($url, -1))) {
+                    $trail = substr($url, -1) . $trail;
+                    $url   = substr($url, 0, -1);
+                }
+                return '<a class="link" href="' . $url . '" target="_blank" rel="noopener noreferrer">' . $url . '</a>' . $trail;
+            },
+            e($text)
+        );
+        echo '<div class="announcement">' . nl2br($html) . '</div>' . "\n";
+    }
+}

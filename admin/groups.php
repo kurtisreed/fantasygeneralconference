@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name   = trim((string)post('name'));
     $leader = trim((string)post('leader_name'));
     $contact = trim((string)post('contact_line'));
+    $note   = trim((string)post('announcement'));
     $accent = strtolower(trim((string)post('accent_color')));
     $useAccent = post('use_accent') !== null;
     $user   = trim((string)post('username'));
@@ -58,8 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $accentVal = $useAccent ? $accent : null;
             if ($current) {
                 exec_sql(
-                    'UPDATE orgs SET name=?, leader_name=?, contact_line=?, accent_color=?, logo_path=? WHERE id=?',
-                    [$name, mb_substr($leader, 0, 80), mb_substr($contact, 0, 160), $accentVal, $logo, $id]
+                    'UPDATE orgs SET name=?, leader_name=?, contact_line=?, announcement=?, accent_color=?, logo_path=? WHERE id=?',
+                    [$name, mb_substr($leader, 0, 80), mb_substr($contact, 0, 160), mb_substr($note, 0, 500) ?: null, $accentVal, $logo, $id]
                 );
                 flash($name . ' saved.');
             } else {
@@ -136,6 +137,11 @@ $accentNow = $editing['accent_color'] ?? null;
 
     <label for="g_contact">Who to text <span class="muted">(&ldquo;text Bishop Reed or Porter&rdquo;)</span></label>
     <input type="text" id="g_contact" name="contact_line" maxlength="160" placeholder="Bishop Reed or Porter" value="<?= $v('contact_line') ?>">
+
+    <?php if ($editing): ?>
+      <label for="g_note">Message <span class="muted">(plain text; web addresses become links; shown above the main page and standings for this group only; leave blank for none)</span></label>
+      <textarea id="g_note" name="announcement" rows="3" maxlength="500"><?= $v('announcement') ?></textarea>
+    <?php endif; ?>
 
     <label class="checkline">
       <input type="checkbox" name="use_accent" value="1" <?= $accentNow || isset($_POST['use_accent']) ? 'checked' : '' ?>>

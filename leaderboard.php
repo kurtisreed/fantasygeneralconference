@@ -87,6 +87,8 @@ page_head('Standings');
   <?php endif; ?>
 </section>
 
+<?php org_announcement(); ?>
+
 <?php if (!$board): ?>
   <div class="card center">
     <p class="muted">No sheets turned in yet.</p>

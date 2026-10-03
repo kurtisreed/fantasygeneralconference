@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS orgs (
   name          VARCHAR(120) NOT NULL,
   leader_name   VARCHAR(80)  NOT NULL DEFAULT '',
   contact_line  VARCHAR(160) NOT NULL DEFAULT '',
+  announcement  VARCHAR(500) NULL,
   accent_color  CHAR(7)      NULL,
   logo_path     VARCHAR(120) NULL,
   created_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,

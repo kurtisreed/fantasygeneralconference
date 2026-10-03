@@ -123,6 +123,8 @@ page_head('Play');
   <?php endif; ?>
 </section>
 
+<?php org_announcement(); ?>
+
 <?php if ($error): ?><div class="error"><?= e($error) ?></div><?php endif; ?>
 
 <?php if ($continuePlayer): ?>
